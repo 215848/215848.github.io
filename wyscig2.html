@@ -20,19 +20,19 @@ Your browser does not support the HTML canvas tag.</canvas>
         pos: {x: 0,y: 550},
         size: {x:200,y:50},
         color: "red",
-        title: 'L'
+        title: 'Left'
     }
     var rightButton={
         pos: {x: 600,y: 550},
         size: {x:200,y:50},
         color: "red",
-        title: 'R'
+        title: 'Right'
     }
     var spaceButton={
         pos: {x: 200,y: 550},
         size: {x:400,y:50},
         color: "white",
-        title: '-'
+        title: 'Shot'
     }
 
     var Rects=[];
@@ -68,10 +68,21 @@ Your browser does not support the HTML canvas tag.</canvas>
     function drawButtons(){
         ctx.fillStyle = leftButton.color;
     	ctx.fillRect(leftButton.pos.x,leftButton.pos.y,leftButton.size.x,leftButton.size.y);
+        ctx.font = "30px Arial";
+        ctx.fillStyle = 'black';
+        ctx.fillText(leftButton.title, leftButton.pos.x+75, leftButton.pos.y+35);
+        
         ctx.fillStyle = rightButton.color;
     	ctx.fillRect(rightButton.pos.x,rightButton.pos.y,rightButton.size.x,rightButton.size.y);
+        ctx.font = "30px Arial";
+        ctx.fillStyle = 'black';
+        ctx.fillText(rightButton.title, rightButton.pos.x+65, rightButton.pos.y+35);
+        
         ctx.fillStyle = spaceButton.color;
     	ctx.fillRect(spaceButton.pos.x,spaceButton.pos.y,spaceButton.size.x,spaceButton.size.y);
+        ctx.font = "30px Arial";
+        ctx.fillStyle = 'black';
+        ctx.fillText(spaceButton.title, spaceButton.pos.x+170, spaceButton.pos.y+35);
     }
 
     function playerMove() {
@@ -89,7 +100,7 @@ Your browser does not support the HTML canvas tag.</canvas>
             if(obstacles[i].pos.y-player.pos.y==20){
                 if(player.pos.x>obstacles[i].pos.x &&  player.pos.x<obstacles[i].pos.x+40 ||
                     player.pos.x+25>obstacles[i].pos.x &&  player.pos.x+25<obstacles[i].pos.x+40){
-                    //gameOver=true;
+                    gameOver=true;
                     document.getElementById("score").innerHTML="Game over!";
                 }
             }
@@ -116,8 +127,8 @@ Your browser does not support the HTML canvas tag.</canvas>
         drawBonuses();
         drawBullets();
         drawButtons();
-
     }
+
     function drawPlayer(){
         ctx.fillStyle = 'Blue';
     	ctx.fillRect(player.pos.x,player.pos.y,25,50);
@@ -258,7 +269,7 @@ Your browser does not support the HTML canvas tag.</canvas>
     
     function shot(){
         var newBullet={
-            bulletX: player.pos.x,
+            bulletX: player.pos.x+12,
             bulletY: player.pos.y,
             size:3,
             speed:2,
