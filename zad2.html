@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="1024" height="768" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML canvas tag.</canvas>
+
+<script>
+    var last = 0;
+    var element = document.getElementById("myCanvas");
+    var etx=element.getContext("2d");
+    var startX=1024;
+    var startY=168;
+    var sizeX=200;
+    var sizeY=500;
+    var counter=0;
+    var bonuceTimeCounter=0;
+    var xModificator=-10;
+    var yModificator=0;
+
+
+    var ballX=1024-40-50;
+    var ballY=168+59;
+    var ballRadius=40;
+
+   
+
+
+    function step(now) {
+        if(!last || now - last >= 100) {
+            last=now;
+            if(counter>=5){
+                etx.beginPath();
+                etx.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI);
+                etx.fillStyle='green';
+                etx.fill();
+                etx.stroke();
+                window.requestAnimationFrame(ball);
+                return;
+            }
+            etx.fillRect(startX-=sizeX,startY+=100,sizeX,sizeY);
+            counter++;
+        }
+        window.requestAnimationFrame(step);
+    }
+    window.requestAnimationFrame(step);
+
+    function ball(now){
+        if(!last || now - last >= 100) {
+            last=now;
+            etx.clearRect(ballX-ballRadius, ballY-ballRadius-2,ballRadius*2+2,ballRadius*2+3);
+            etx.beginPath();
+            if(bonuceTimeCounter==22){
+                bonuceTimeCounter=0;
+            }
+            if(bonuceTimeCounter<11){
+                yModificator=-5;
+            }else{
+                yModificator=14;
+            }
+            bonuceTimeCounter+=1;
+            
+            etx.arc(ballX+=xModificator,ballY+=yModificator,ballRadius,0,2*Math.PI);
+            etx.fillStyle='green';
+            etx.fill();
+            etx.stroke();
+        }
+        window.requestAnimationFrame(ball);
+    }
+    
+
+
+</script> 
+
+</body>
+</html>

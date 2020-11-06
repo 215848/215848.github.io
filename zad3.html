@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="1024" height="768" style="border:1px solid #d3d3d3;">
+
+Your browser does not support the HTML canvas tag.</canvas>
+<h1 id="score">0</h1>
+<script>
+    var canvas = document.getElementById('myCanvas');
+	var ctx = canvas.getContext('2d');
+	var player = {
+		pos: {x: 512,y: 700},
+        direction: { x: 0, y: 0 },
+		speed: 5,
+        brake: 0.7, 
+	};
+    var score=0;
+    var target={
+        pos:{x:100,y:25},
+        size:25,
+    };
+    var bullets=[];
+	var FPS = 144;
+    window.onload = function() {
+    	setInterval(function() {
+            playerMove();
+    		refresh();
+    	}, 1000/FPS);
+    };
+    function playerMove() {
+        player.pos.x += player.direction.x * player.speed;
+        player.pos.y += player.direction.y * player.speed;
+        player.direction.x *= player.brake;
+        player.direction.y *= player.brake;
+    }
+    function refresh() {
+    	ctx.fillStyle = 'Black';
+    	ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = 'Blue';
+    	ctx.fillRect(player.pos.x,player.pos.y,50,50);
+        ctx.fillStyle = 'Red';
+    	ctx.beginPath();
+    	ctx.arc(target.pos.x,target.pos.y,target.size,0,Math.PI*2,true);
+    	ctx.closePath();
+    	ctx.fill();
+        drawBullets();
+    }
+    function drawBullets(){
+        console.log(bullets.size);
+        for(var i=0;i<bullets.length;i++){
+            var bulletX=bullets[i].bulletX;
+            var bulletY=bullets[i].bulletY;
+            var speed=bullets[i].speed;
+            var size=bullets[i].size;
+            ctx.fillStyle = 'yellow';
+    	    ctx.beginPath();
+    	    ctx.arc(bulletX,bullets[i].bulletY-=speed,size,0,Math.PI*2,true);
+    	    ctx.closePath();
+    	    ctx.fill();
+            
+            if(bulletY<0){
+                bullets.splice(i,1);
+            }
+
+            if((bulletX >= target.pos.x-target.size && bulletX <=target.pos.x+target.size) && 
+            (bulletY <= target.pos.y+target.size && bulletY >target.pos.y-target.size)){
+                target.pos.x=Math.floor(Math.random() * 999) + 25;
+                score++;
+                document.getElementById("score").innerHTML = score;
+            }
+        }
+    }
+    document.addEventListener('keydown', event => {
+        if (event.keyCode === 37) { 
+        	player.direction.x += -1;
+        } else if (event.keyCode === 39) { 
+        	player.direction.x += 1;
+        } else if (event.keyCode === 32 ) { 
+        	shot();
+        }
+    
+    });
+    function shot(){
+        var newBullet={
+            bulletX: player.pos.x+25,
+            bulletY: player.pos.y,
+            size:3,
+            speed:5,
+        }
+        bullets.push(newBullet);
+    }
+</script> 
+
+</body>
+</html>
