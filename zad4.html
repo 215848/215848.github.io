@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+    
+Your browser does not support the HTML canvas tag.</canvas>
+<h1 id="score">0</h1>
+<script>
+    var canvas = document.getElementById('myCanvas');
+	var ctx = canvas.getContext('2d');
+	var gameOver=false;
+    var player = {
+		pos: {x: 400,y: 500},
+        direction: { x: 0, y: 0 },
+		speed: 3,
+        brake: 1, 
+	};
+    var Rects=[];
+    var RectsCounter=0;
+    var obstaclesCounter=0;
+    var bonusesCounter=0;
+    var whiteRect={
+        pos: {x: 395,y: 0},
+        speed: 2,
+    }
+    Rects.push(whiteRect);
+
+    var obstacles=[];
+    var bonuses=[];
+    var points=0;
+
+	var FPS = 240;
+    window.onload = function() {
+    	setInterval(function() {
+            if(!gameOver){
+                playerMove();
+                moveRects();
+                moveObstacles();
+                moveBonuses();
+    		    refresh();
+            }
+    	}, 1000/FPS);
+    };
+    function playerMove() {
+        console.log(player.direction.x);
+        player.direction.x*=player.brake;
+        player.direction.y*=player.brake;
+        
+        player.pos.x+=player.direction.x;
+        player.pos.y+=player.direction.y;
+
+        
+       
+        for(var i=0;i<obstacles.length;i++){
+            
+            if(obstacles[i].pos.y-player.pos.y==20){
+                if(player.pos.x>obstacles[i].pos.x &&  player.pos.x<obstacles[i].pos.x+40 ||
+                    player.pos.x+25>obstacles[i].pos.x &&  player.pos.x+25<obstacles[i].pos.x+40){
+                    gameOver=true;
+                    document.getElementById("score").innerHTML="Game over!";
+                }
+            }
+        }
+        for(var i=0;i<bonuses.length;i++){
+            
+            if(player.pos.y-bonuses[i].pos.y<5){
+                if(player.pos.x>bonuses[i].pos.x &&  player.pos.x<bonuses[i].pos.x+40 ||
+                    player.pos.x+25>bonuses[i].pos.x-15 &&  player.pos.x+25<bonuses[i].pos.x+15){
+                    points++;
+                    document.getElementById("score").innerHTML = points;
+                    bonuses.splice(i,1);
+                }
+            }
+        }
+
+    }
+    function refresh() {
+        ctx.fillStyle = 'Grey';
+    	ctx.fillRect(0,0,canvas.width,canvas.height);
+        drawRects();
+        drawPlayer();
+        drawObstacles();
+        drawBonuses();
+
+    }
+    function drawPlayer(){
+        ctx.fillStyle = 'Blue';
+    	ctx.fillRect(player.pos.x,player.pos.y,25,50);
+        
+        ctx.fillStyle = 'Blue';
+    	ctx.fillRect(player.pos.x+25,player.pos.y+37,8,15);
+        ctx.fillStyle = 'Blue';
+    	ctx.fillRect(player.pos.x-8,player.pos.y+37,8,15);
+        ctx.fillStyle = 'Blue';
+    	ctx.fillRect(player.pos.x+25,player.pos.y+10,8,15);
+        ctx.fillStyle = 'Blue';
+    	ctx.fillRect(player.pos.x-8,player.pos.y+10,8,15);
+    }
+    function moveRects(){
+        if(RectsCounter==30){
+            RectsCounter=0;
+            for(var i=0;i<=800;i+=395){
+                var whiteRect={
+                    pos: {x: i,y: -30},
+                    speed: 2,
+                    color: 'white',
+                }
+                Rects.push(whiteRect);
+            }
+            for(var i=0;i<=800;i+=790){
+                var RedRect={
+                    pos: {x: i,y: 0},
+                    speed: 2,
+                    color: 'red',
+                }
+                Rects.push(RedRect);
+            }
+
+        }
+        RectsCounter++;
+        for(var i=0;i<Rects.length;i++){
+            if(Rects[i].pos.y>600){
+               Rects.splice(i,1); 
+            }else{
+                Rects[i].pos.y+=Rects[i].speed;
+            }
+        }
+    }
+    
+    function drawRects(){
+        for(var i=0;i<Rects.length;i++){
+            ctx.fillStyle = Rects[i].color;
+    	    ctx.fillRect(Rects[i].pos.x,Rects[i].pos.y,10,20);
+        }
+    }
+ 
+    function drawObstacles(){
+        
+        for(var i=0;i<obstacles.length;i++){
+            
+            ctx.fillStyle = 'orange';
+    	    ctx.fillRect(obstacles[i].pos.x,obstacles[i].pos.y,40,10);
+        }
+    }
+    function moveObstacles(){
+        
+        if(obstaclesCounter==50){
+            
+            obstaclesCounter=0;
+            if(Math.random()>0.5){
+                var nextX=Math.floor(Math.random() * 750) + 10;
+                var obstacle={
+                    pos:{x:nextX, y:-30},
+                    speed: 2,
+                }
+                obstacles.push(obstacle);
+            }
+        }
+        obstaclesCounter++;
+        for(var i=0;i<obstacles.length;i++){
+            if(obstacles[i].pos.y>600){
+                obstacles.splice(i,1); 
+            }else{
+                obstacles[i].pos.y+=obstacles[i].speed;
+            }
+        }
+
+    }
+
+    function moveBonuses(){
+        if(bonusesCounter==50){
+            
+            bonusesCounter=0;
+            if(Math.random()>0.75){
+                var nextX=Math.floor(Math.random() * 750) + 10;
+                var bonus={
+                    pos:{x:nextX, y:-30},
+                    speed: 2,
+                }
+                bonuses.push(bonus);
+            }
+        }
+        bonusesCounter++;
+        for(var i=0;i<bonuses.length;i++){
+            if(bonuses[i].pos.y>600){
+                bonuses.splice(i,1); 
+            }else{
+                bonuses[i].pos.y+=bonuses[i].speed;
+            }
+        }
+    }
+    function drawBonuses(){
+        for(var i=0;i<bonuses.length;i++){
+            
+            ctx.fillStyle = 'green';
+    	    ctx.beginPath();
+    	    ctx.arc(bonuses[i].pos.x,bonuses[i].pos.y,15,0,Math.PI*2,true);
+    	    ctx.closePath();
+    	    ctx.fill();
+        }
+    }
+
+   
+    document.addEventListener('keydown', event => {
+        if (event.keyCode === 37) { 
+            if(player.direction.x>-player.speed){
+                player.direction.x=0;
+        	    player.direction.x-=1;
+
+            }
+        } else if (event.keyCode === 39) { 
+        	if(player.direction.x<player.speed){
+                player.direction.x=0;
+        	    player.direction.x+=1;
+            }
+        }
+    
+    });
+</script> 
+
+</body>
+</html>
