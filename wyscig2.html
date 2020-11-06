@@ -5,7 +5,6 @@
 <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
     
 Your browser does not support the HTML canvas tag.</canvas>
-<h1 id="score">0</h1>
 <script>
     var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext('2d');
@@ -34,7 +33,7 @@ Your browser does not support the HTML canvas tag.</canvas>
         color: "white",
         title: 'Shot'
     }
-
+        
     var Rects=[];
     var bullets=[];
     var shotCooldown=-1;
@@ -101,7 +100,7 @@ Your browser does not support the HTML canvas tag.</canvas>
                 if(player.pos.x>obstacles[i].pos.x &&  player.pos.x<obstacles[i].pos.x+40 ||
                     player.pos.x+25>obstacles[i].pos.x &&  player.pos.x+25<obstacles[i].pos.x+40){
                     gameOver=true;
-                    document.getElementById("score").innerHTML="Game over!";
+                    
                 }
             }
         }
@@ -111,7 +110,7 @@ Your browser does not support the HTML canvas tag.</canvas>
                 if(player.pos.x>bonuses[i].pos.x &&  player.pos.x<bonuses[i].pos.x+40 ||
                     player.pos.x+25>bonuses[i].pos.x-15 &&  player.pos.x+25<bonuses[i].pos.x+15){
                     points++;
-                    document.getElementById("score").innerHTML = points;
+                    
                     bonuses.splice(i,1);
                 }
             }
@@ -127,8 +126,20 @@ Your browser does not support the HTML canvas tag.</canvas>
         drawBonuses();
         drawBullets();
         drawButtons();
-    }
+        drawScore();
+        if(gameOver){
+            ctx.font = "60px Arial";
+            ctx.fillStyle = 'red';
+            ctx.fillText("Game  Over!",220 ,200);
+        }
 
+    }
+    function drawScore(){
+        ctx.font = "30px Arial";
+        ctx.fillStyle = 'black';
+        ctx.fillText("Score: ".concat(points),50 ,50);
+    }
+ 
     function drawPlayer(){
         ctx.fillStyle = 'Blue';
     	ctx.fillRect(player.pos.x,player.pos.y,25,50);
