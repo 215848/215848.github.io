@@ -9,7 +9,7 @@
     >
       Your browser does not support the HTML canvas tag.
     </canvas>
-    <h1 id="console">console</h1>
+    <!-- <h1 id="console">console</h1> -->
     <script>
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
@@ -136,7 +136,7 @@
       }
 
       function playerMove() {
-        document.getElementById("console").innerHTML = player.direction.x;
+        //document.getElementById("console").innerHTML = player.direction.x;
         player.direction.x *= player.brake;
         player.direction.y *= player.brake;
 				
