@@ -144,9 +144,9 @@
         player.pos.x += player.direction.x;
         player.pos.y += player.direction.y;
 				if(player.pos.x<20)
-					player.pos.x=0;
+					player.pos.x=20;
 				if(player.pos.x>canvas.width-40)
-					player.pos.x=canvas.width;
+					player.pos.x=canvas.width-40;
 
         for (var i = 0; i < obstacles.length; i++) {
           if (obstacles[i].pos.y - player.pos.y == 20) {
