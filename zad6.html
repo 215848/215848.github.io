@@ -61,9 +61,15 @@
       acl.addEventListener("reading", () => {
 				if(acl.x < -1.5)
 					player.direction.x=1.5;
+				else
+					player.direction.x=acl.x*-1;
+
 				if(acl.x > 1.5)
 					player.direction.x=-1.5;
-				if(aclx.x > -1.5 && aclx.x < 1.5)
+				else
+					player.direction.x=acl.x*-1;
+
+				if(aclx.x > -0.5 && aclx.x < 0.5)
 					player.direction.x=-0;
 				
 				
