@@ -7,7 +7,6 @@
       height="600"
       style="border: 1px solid #d3d3d3"
     >
-    
       Your browser does not support the HTML canvas tag.
     </canvas>
     <h1 id="console">console</h1>
@@ -15,14 +14,6 @@
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
       var gameOver = false;
-      let acl = new Accelerometer({ frequency: 60 });
-
-      acl.addEventListener("reading", () => {
-				player.direction=acl.x;
-        document.getElementById("console").innerHTML = acl.x;
-      });
-
-      acl.start();
 
       var player = {
         pos: { x: 400, y: 450 },
@@ -64,6 +55,15 @@
       var obstacles = [];
       var bonuses = [];
       var points = 0;
+
+      let acl = new Accelerometer({ frequency: 60 });
+
+      acl.addEventListener("reading", () => {
+        player.direction = acl.x;
+        document.getElementById("console").innerHTML = acl.x;
+      });
+
+      acl.start();
 
       var FPS = 240;
       window.onload = function () {
