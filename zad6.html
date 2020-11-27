@@ -42,7 +42,7 @@
 
       var Rects = [];
       var bullets = [];
-      var shotCooldown = -1;
+      //var shotCooldown = -1;
       var RectsCounter = 0;
       var obstaclesCounter = 0;
       var bonusesCounter = 0;
@@ -68,7 +68,7 @@
       window.onload = function () {
         setInterval(function () {
           if (!gameOver) {
-            shotCooldown--;
+            //shotCooldown--;
             playerMove();
             moveBullets();
             moveRects();
@@ -308,10 +308,10 @@
             player.direction.x += 1.5;
           }
         } else if (event.keyCode === 32) {
-          if (shotCooldown < 0) {
+          //if (shotCooldown < 0) {
             shot();
-            shotCooldown = 240;
-          }
+           // shotCooldown = 240;
+         // }
         }
       });
 
@@ -384,10 +384,10 @@
               player.direction.x += 1.5;
             }
           } else if (isInside(mousePos, spaceButton)) {
-            if (shotCooldown < 0) {
+            //if (shotCooldown < 0) {
               shot();
-              shotCooldown = 240;
-            }
+              //shotCooldown = 240;
+            //}
           }
         },
         false
