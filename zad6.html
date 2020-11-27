@@ -60,6 +60,7 @@
 
       acl.addEventListener("reading", () => {
         player.direction = acl.x;
+				acl.x<0?player.direction=-1.5:player.direction=1.5;
         document.getElementById("console").innerHTML = acl.x;
       });
 
