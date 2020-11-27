@@ -59,7 +59,7 @@
       let acl = new Accelerometer({ frequency: 60 });
 
       acl.addEventListener("reading", () => {
-				acl.x<0?player.direction.x=-1.5:player.direction.x=1.5;
+				acl.x<0?player.direction.x=1.5:player.direction.x=-1.5;
       });
 
       acl.start();
@@ -129,9 +129,14 @@
         document.getElementById("console").innerHTML = player.direction.x;
         player.direction.x *= player.brake;
         player.direction.y *= player.brake;
-
+				
+				
         player.pos.x += player.direction.x;
         player.pos.y += player.direction.y;
+				if(player.pos.x<0)
+					player.pos.x=0;
+				if(player.pos.x<document.width)
+					player.pos.x=document.width;
 
         for (var i = 0; i < obstacles.length; i++) {
           if (obstacles[i].pos.y - player.pos.y == 20) {
