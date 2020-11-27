@@ -59,7 +59,14 @@
       let acl = new Accelerometer({ frequency: 60 });
 
       acl.addEventListener("reading", () => {
-				acl.x<0?player.direction.x=1.5:player.direction.x=-1.5;
+				if(acl.x < -1.5)
+					player.direction.x=1.5
+				else
+					player.direction.x=acl.x*-1
+				if(acl.x > 1.5)
+					player.direction.x=-1.5
+				else
+					player.direction.x=acl.x*-1
       });
 
       acl.start();
