@@ -1,125 +1,165 @@
 <!DOCTYPE html>
 <html>
-<body>
-
-<canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
-    
-Your browser does not support the HTML canvas tag.</canvas>
-<script>
-    var canvas = document.getElementById('myCanvas');
-	var ctx = canvas.getContext('2d');
-	var gameOver=false;
-    var player = {
-		pos: {x: 400,y: 450},
+  <body>
+    <canvas
+      id="myCanvas"
+      width="800"
+      height="600"
+      style="border: 1px solid #d3d3d3"
+    >
+      Your browser does not support the HTML canvas tag.</canvas
+    >
+    <script>
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      var gameOver = false;
+      let acl = new Accelerometer({ frequency: 60 });
+      var player = {
+        pos: { x: 400, y: 450 },
         direction: { x: 0, y: 0 },
-		speed: 3,
-        brake: 0.995, 
-	};
-    var leftButton={
-        pos: {x: 0,y: 500},
-        size: {x:200,y:100},
+        speed: 3,
+        brake: 0.995,
+      };
+      var leftButton = {
+        pos: { x: 0, y: 500 },
+        size: { x: 200, y: 100 },
         color: "red",
-        title: 'Left'
-    }
-    var rightButton={
-        pos: {x: 600,y: 500},
-        size: {x:200,y:100},
+        title: "Left",
+      };
+      var rightButton = {
+        pos: { x: 600, y: 500 },
+        size: { x: 200, y: 100 },
         color: "red",
-        title: 'Right'
-    }
-    var spaceButton={
-        pos: {x: 200,y: 550},
-        size: {x:400,y:50},
+        title: "Right",
+      };
+      var spaceButton = {
+        pos: { x: 200, y: 550 },
+        size: { x: 400, y: 50 },
         color: "white",
-        title: 'Shot'
-    }
-        
-    var Rects=[];
-    var bullets=[];
-    var shotCooldown=-1;
-    var RectsCounter=0;
-    var obstaclesCounter=0;
-    var bonusesCounter=0;
-    var whiteRect={
-        pos: {x: 395,y: 0},
+        title: "Shot",
+      };
+      acl.addEventListener("reading", () => {
+        console.log("Acceleration along the X-axis " + acl.x);
+        console.log("Acceleration along the Y-axis " + acl.y);
+      });
+
+      acl.start();
+
+      var Rects = [];
+      var bullets = [];
+      var shotCooldown = -1;
+      var RectsCounter = 0;
+      var obstaclesCounter = 0;
+      var bonusesCounter = 0;
+      var whiteRect = {
+        pos: { x: 395, y: 0 },
         speed: 2,
-    }
-    Rects.push(whiteRect);
+      };
+      Rects.push(whiteRect);
 
-    var obstacles=[];
-    var bonuses=[];
-    var points=0;
+      var obstacles = [];
+      var bonuses = [];
+      var points = 0;
 
-	var FPS = 240;
-    window.onload = function() {
-    	setInterval(function() {
-            if(!gameOver){
-                shotCooldown--;
-                playerMove();
-                moveBullets();
-                moveRects();
-                moveObstacles();
-                moveBonuses();
-    		    refresh();
-            }
-    	}, 1000/FPS);
-    };
-    function drawButtons(){
+      var FPS = 240;
+      window.onload = function () {
+        setInterval(function () {
+          if (!gameOver) {
+            shotCooldown--;
+            playerMove();
+            moveBullets();
+            moveRects();
+            moveObstacles();
+            moveBonuses();
+            refresh();
+          }
+        }, 1000 / FPS);
+      };
+      function drawButtons() {
         ctx.fillStyle = leftButton.color;
-    	ctx.fillRect(leftButton.pos.x,leftButton.pos.y,leftButton.size.x,leftButton.size.y);
+        ctx.fillRect(
+          leftButton.pos.x,
+          leftButton.pos.y,
+          leftButton.size.x,
+          leftButton.size.y
+        );
         ctx.font = "30px Arial";
-        ctx.fillStyle = 'black';
-        ctx.fillText(leftButton.title, leftButton.pos.x+75, leftButton.pos.y+35);
-        
+        ctx.fillStyle = "black";
+        ctx.fillText(
+          leftButton.title,
+          leftButton.pos.x + 75,
+          leftButton.pos.y + 35
+        );
+
         ctx.fillStyle = rightButton.color;
-    	ctx.fillRect(rightButton.pos.x,rightButton.pos.y,rightButton.size.x,rightButton.size.y);
+        ctx.fillRect(
+          rightButton.pos.x,
+          rightButton.pos.y,
+          rightButton.size.x,
+          rightButton.size.y
+        );
         ctx.font = "30px Arial";
-        ctx.fillStyle = 'black';
-        ctx.fillText(rightButton.title, rightButton.pos.x+65, rightButton.pos.y+35);
-        
+        ctx.fillStyle = "black";
+        ctx.fillText(
+          rightButton.title,
+          rightButton.pos.x + 65,
+          rightButton.pos.y + 35
+        );
+
         ctx.fillStyle = spaceButton.color;
-    	ctx.fillRect(spaceButton.pos.x,spaceButton.pos.y,spaceButton.size.x,spaceButton.size.y);
+        ctx.fillRect(
+          spaceButton.pos.x,
+          spaceButton.pos.y,
+          spaceButton.size.x,
+          spaceButton.size.y
+        );
         ctx.font = "30px Arial";
-        ctx.fillStyle = 'black';
-        ctx.fillText(spaceButton.title, spaceButton.pos.x+170, spaceButton.pos.y+35);
-    }
+        ctx.fillStyle = "black";
+        ctx.fillText(
+          spaceButton.title,
+          spaceButton.pos.x + 170,
+          spaceButton.pos.y + 35
+        );
+      }
 
-    function playerMove() {
+      function playerMove() {
         console.log(player.direction.x);
-        player.direction.x*=player.brake;
-        player.direction.y*=player.brake;
-        
-        player.pos.x+=player.direction.x;
-        player.pos.y+=player.direction.y;
+        player.direction.x *= player.brake;
+        player.direction.y *= player.brake;
 
-        
-       
-        for(var i=0;i<obstacles.length;i++){
-            
-            if(obstacles[i].pos.y-player.pos.y==20){
-                if(player.pos.x>obstacles[i].pos.x &&  player.pos.x<obstacles[i].pos.x+40 ||
-                    player.pos.x+25>obstacles[i].pos.x &&  player.pos.x+25<obstacles[i].pos.x+40){
-                    gameOver=true;
-                    
-                }
-            }
-        }
-        for(var i=0;i<bonuses.length;i++){
-            
-            if(player.pos.y-bonuses[i].pos.y<5){
-                if(player.pos.x>bonuses[i].pos.x &&  player.pos.x<bonuses[i].pos.x+40 ||
-                    player.pos.x+25>bonuses[i].pos.x-15 &&  player.pos.x+25<bonuses[i].pos.x+15){
-                    points++;
-                    
-                    bonuses.splice(i,1);
-                }
-            }
-        }
+        player.pos.x += player.direction.x;
+        player.pos.y += player.direction.y;
 
-    }
-    function refresh() {
-        ctx.fillStyle = 'Grey';
-    	ctx.fillRect(0,0,canvas.width,canvas.height);
+        for (var i = 0; i < obstacles.length; i++) {
+          if (obstacles[i].pos.y - player.pos.y == 20) {
+            if (
+              (player.pos.x > obstacles[i].pos.x &&
+                player.pos.x < obstacles[i].pos.x + 40) ||
+              (player.pos.x + 25 > obstacles[i].pos.x &&
+                player.pos.x + 25 < obstacles[i].pos.x + 40)
+            ) {
+              gameOver = true;
+            }
+          }
+        }
+        for (var i = 0; i < bonuses.length; i++) {
+          if (player.pos.y - bonuses[i].pos.y < 5) {
+            if (
+              (player.pos.x > bonuses[i].pos.x &&
+                player.pos.x < bonuses[i].pos.x + 40) ||
+              (player.pos.x + 25 > bonuses[i].pos.x - 15 &&
+                player.pos.x + 25 < bonuses[i].pos.x + 15)
+            ) {
+              points++;
+
+              bonuses.splice(i, 1);
+            }
+          }
+        }
+      }
+      function refresh() {
+        ctx.fillStyle = "Grey";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         drawRects();
         drawPlayer();
         drawObstacles();
@@ -127,237 +167,239 @@ Your browser does not support the HTML canvas tag.</canvas>
         drawBullets();
         drawButtons();
         drawScore();
-        if(gameOver){
-            ctx.font = "60px Arial";
-            ctx.fillStyle = 'red';
-            ctx.fillText("Game  Over!",220 ,200);
+        if (gameOver) {
+          ctx.font = "60px Arial";
+          ctx.fillStyle = "red";
+          ctx.fillText("Game  Over!", 220, 200);
         }
-
-    }
-    function drawScore(){
+      }
+      function drawScore() {
         ctx.font = "30px Arial";
-        ctx.fillStyle = 'black';
-        ctx.fillText("Score: ".concat(points),50 ,50);
-    }
- 
-    function drawPlayer(){
-        ctx.fillStyle = 'Blue';
-    	ctx.fillRect(player.pos.x,player.pos.y,25,50);
-        
-        ctx.fillStyle = 'Blue';
-    	ctx.fillRect(player.pos.x+25,player.pos.y+37,8,15);
-        ctx.fillStyle = 'Blue';
-    	ctx.fillRect(player.pos.x-8,player.pos.y+37,8,15);
-        ctx.fillStyle = 'Blue';
-    	ctx.fillRect(player.pos.x+25,player.pos.y+10,8,15);
-        ctx.fillStyle = 'Blue';
-    	ctx.fillRect(player.pos.x-8,player.pos.y+10,8,15);
-    }
-    function moveRects(){
-        if(RectsCounter==30){
-            RectsCounter=0;
-            for(var i=0;i<=800;i+=395){
-                var whiteRect={
-                    pos: {x: i,y: -30},
-                    speed: 2,
-                    color: 'white',
-                }
-                Rects.push(whiteRect);
-            }
-            for(var i=0;i<=800;i+=790){
-                var RedRect={
-                    pos: {x: i,y: 0},
-                    speed: 2,
-                    color: 'red',
-                }
-                Rects.push(RedRect);
-            }
+        ctx.fillStyle = "black";
+        ctx.fillText("Score: ".concat(points), 50, 50);
+      }
 
+      function drawPlayer() {
+        ctx.fillStyle = "Blue";
+        ctx.fillRect(player.pos.x, player.pos.y, 25, 50);
+
+        ctx.fillStyle = "Blue";
+        ctx.fillRect(player.pos.x + 25, player.pos.y + 37, 8, 15);
+        ctx.fillStyle = "Blue";
+        ctx.fillRect(player.pos.x - 8, player.pos.y + 37, 8, 15);
+        ctx.fillStyle = "Blue";
+        ctx.fillRect(player.pos.x + 25, player.pos.y + 10, 8, 15);
+        ctx.fillStyle = "Blue";
+        ctx.fillRect(player.pos.x - 8, player.pos.y + 10, 8, 15);
+      }
+      function moveRects() {
+        if (RectsCounter == 30) {
+          RectsCounter = 0;
+          for (var i = 0; i <= 800; i += 395) {
+            var whiteRect = {
+              pos: { x: i, y: -30 },
+              speed: 2,
+              color: "white",
+            };
+            Rects.push(whiteRect);
+          }
+          for (var i = 0; i <= 800; i += 790) {
+            var RedRect = {
+              pos: { x: i, y: 0 },
+              speed: 2,
+              color: "red",
+            };
+            Rects.push(RedRect);
+          }
         }
         RectsCounter++;
-        for(var i=0;i<Rects.length;i++){
-            if(Rects[i].pos.y>600){
-               Rects.splice(i,1); 
-            }else{
-                Rects[i].pos.y+=Rects[i].speed;
-            }
+        for (var i = 0; i < Rects.length; i++) {
+          if (Rects[i].pos.y > 600) {
+            Rects.splice(i, 1);
+          } else {
+            Rects[i].pos.y += Rects[i].speed;
+          }
         }
-    }
-    
-    function drawRects(){
-        for(var i=0;i<Rects.length;i++){
-            ctx.fillStyle = Rects[i].color;
-    	    ctx.fillRect(Rects[i].pos.x,Rects[i].pos.y,10,20);
+      }
+
+      function drawRects() {
+        for (var i = 0; i < Rects.length; i++) {
+          ctx.fillStyle = Rects[i].color;
+          ctx.fillRect(Rects[i].pos.x, Rects[i].pos.y, 10, 20);
         }
-    }
- 
-    function drawObstacles(){
-        
-        for(var i=0;i<obstacles.length;i++){
-            
-            ctx.fillStyle = 'orange';
-    	    ctx.fillRect(obstacles[i].pos.x,obstacles[i].pos.y,40,10);
+      }
+
+      function drawObstacles() {
+        for (var i = 0; i < obstacles.length; i++) {
+          ctx.fillStyle = "orange";
+          ctx.fillRect(obstacles[i].pos.x, obstacles[i].pos.y, 40, 10);
         }
-    }
-    function moveObstacles(){
-        
-        if(obstaclesCounter==50){
-            
-            obstaclesCounter=0;
-            if(Math.random()>0.5){
-                var nextX=Math.floor(Math.random() * 750) + 10;
-                var obstacle={
-                    pos:{x:nextX, y:-30},
-                    speed: 2,
-                }
-                obstacles.push(obstacle);
-            }
+      }
+      function moveObstacles() {
+        if (obstaclesCounter == 50) {
+          obstaclesCounter = 0;
+          if (Math.random() > 0.5) {
+            var nextX = Math.floor(Math.random() * 750) + 10;
+            var obstacle = {
+              pos: { x: nextX, y: -30 },
+              speed: 2,
+            };
+            obstacles.push(obstacle);
+          }
         }
         obstaclesCounter++;
-        for(var i=0;i<obstacles.length;i++){
-            if(obstacles[i].pos.y>600){
-                obstacles.splice(i,1); 
-            }else{
-                obstacles[i].pos.y+=obstacles[i].speed;
-            }
+        for (var i = 0; i < obstacles.length; i++) {
+          if (obstacles[i].pos.y > 600) {
+            obstacles.splice(i, 1);
+          } else {
+            obstacles[i].pos.y += obstacles[i].speed;
+          }
         }
+      }
 
-    }
-
-    function moveBonuses(){
-        if(bonusesCounter==50){
-            
-            bonusesCounter=0;
-            if(Math.random()>0.75){
-                var nextX=Math.floor(Math.random() * 750) + 10;
-                var bonus={
-                    pos:{x:nextX, y:-30},
-                    speed: 2,
-                }
-                bonuses.push(bonus);
-            }
+      function moveBonuses() {
+        if (bonusesCounter == 50) {
+          bonusesCounter = 0;
+          if (Math.random() > 0.75) {
+            var nextX = Math.floor(Math.random() * 750) + 10;
+            var bonus = {
+              pos: { x: nextX, y: -30 },
+              speed: 2,
+            };
+            bonuses.push(bonus);
+          }
         }
         bonusesCounter++;
-        for(var i=0;i<bonuses.length;i++){
-            if(bonuses[i].pos.y>600){
-                bonuses.splice(i,1); 
-            }else{
-                bonuses[i].pos.y+=bonuses[i].speed;
-            }
+        for (var i = 0; i < bonuses.length; i++) {
+          if (bonuses[i].pos.y > 600) {
+            bonuses.splice(i, 1);
+          } else {
+            bonuses[i].pos.y += bonuses[i].speed;
+          }
         }
-    }
-    function drawBonuses(){
-        for(var i=0;i<bonuses.length;i++){
-            
-            ctx.fillStyle = 'green';
-    	    ctx.beginPath();
-    	    ctx.arc(bonuses[i].pos.x,bonuses[i].pos.y,15,0,Math.PI*2,true);
-    	    ctx.closePath();
-    	    ctx.fill();
+      }
+      function drawBonuses() {
+        for (var i = 0; i < bonuses.length; i++) {
+          ctx.fillStyle = "green";
+          ctx.beginPath();
+          ctx.arc(bonuses[i].pos.x, bonuses[i].pos.y, 15, 0, Math.PI * 2, true);
+          ctx.closePath();
+          ctx.fill();
         }
-    }
+      }
 
-   
-    document.addEventListener('keydown', event => {
-        if (event.keyCode === 37) { 
-            if(player.direction.x>-player.speed){
-                player.direction.x=0;
-        	    player.direction.x-=1;
+      document.addEventListener("keydown", (event) => {
+        if (event.keyCode === 37) {
+          if (player.direction.x > -player.speed) {
+            player.direction.x = 0;
+            player.direction.x -= 1;
+          }
+        } else if (event.keyCode === 39) {
+          if (player.direction.x < player.speed) {
+            player.direction.x = 0;
+            player.direction.x += 1;
+          }
+        } else if (event.keyCode === 32) {
+          if (shotCooldown < 0) {
+            shot();
+            shotCooldown = 240;
+          }
+        }
+      });
 
-            }
-        } else if (event.keyCode === 39) { 
-        	if(player.direction.x<player.speed){
-                player.direction.x=0;
-        	    player.direction.x+=1;
-            }
-        } else if (event.keyCode === 32 ) { 
-            if(shotCooldown<0){
-                shot();
-                shotCooldown=240;
-            }
-        }
-    });
-    
-    function shot(){
-        var newBullet={
-            bulletX: player.pos.x+12,
-            bulletY: player.pos.y,
-            size:3,
-            speed:2,
-        }
+      function shot() {
+        var newBullet = {
+          bulletX: player.pos.x + 12,
+          bulletY: player.pos.y,
+          size: 3,
+          speed: 2,
+        };
         bullets.push(newBullet);
-    }
-    function moveBullets(){
-        for(var i=0;i<bullets.length;i++){
-            var bulletX=bullets[i].bulletX;
-            var bulletY=bullets[i].bulletY;
-            var speed=bullets[i].speed;
-            var size=bullets[i].size;
+      }
+      function moveBullets() {
+        for (var i = 0; i < bullets.length; i++) {
+          var bulletX = bullets[i].bulletX;
+          var bulletY = bullets[i].bulletY;
+          var speed = bullets[i].speed;
+          var size = bullets[i].size;
 
-            if(bulletY<0){
-                bullets.splice(i,1);
+          if (bulletY < 0) {
+            bullets.splice(i, 1);
+          }
+
+          for (var j = 0; j < obstacles.length; j++) {
+            if (Math.abs(obstacles[j].pos.y - bulletY) <= 3) {
+              if (
+                bulletX - obstacles[j].pos.x <= 40 &&
+                bulletX - obstacles[j].pos.x >= 0
+              ) {
+                obstacles.splice(j, 1);
+              }
             }
-            
-            for(var j=0;j<obstacles.length;j++){
-                
-                if(Math.abs(obstacles[j].pos.y-bulletY)<=3){
-                    if(bulletX-obstacles[j].pos.x<=40 && bulletX-obstacles[j].pos.x>=0){
-                        obstacles.splice(j,1)
-                    }
-                }
-            }
-            
+          }
         }
-    }
+      }
 
-    function drawBullets(){
-        for(var i=0;i<bullets.length;i++){
-            var bulletX=bullets[i].bulletX;
-            var bulletY=bullets[i].bulletY;
-            var speed=bullets[i].speed;
-            var size=bullets[i].size;
-            ctx.fillStyle = 'yellow';
-    	    ctx.beginPath();
-    	    ctx.arc(bulletX,bullets[i].bulletY-=speed,size,0,Math.PI*2,true);
-    	    ctx.closePath();
-    	    ctx.fill();
-          
+      function drawBullets() {
+        for (var i = 0; i < bullets.length; i++) {
+          var bulletX = bullets[i].bulletX;
+          var bulletY = bullets[i].bulletY;
+          var speed = bullets[i].speed;
+          var size = bullets[i].size;
+          ctx.fillStyle = "yellow";
+          ctx.beginPath();
+          ctx.arc(
+            bulletX,
+            (bullets[i].bulletY -= speed),
+            size,
+            0,
+            Math.PI * 2,
+            true
+          );
+          ctx.closePath();
+          ctx.fill();
         }
-    }
+      }
 
-    canvas.addEventListener('click', function(evt) {
-        var mousePos = getMousePos(canvas, evt);
-        if (isInside(mousePos,leftButton)) { 
-            if(player.direction.x>-player.speed){
-                player.direction.x=0;
-        	    player.direction.x-=1;
+      canvas.addEventListener(
+        "click",
+        function (evt) {
+          var mousePos = getMousePos(canvas, evt);
+          if (isInside(mousePos, leftButton)) {
+            if (player.direction.x > -player.speed) {
+              player.direction.x = 0;
+              player.direction.x -= 1;
+            }
+          } else if (isInside(mousePos, rightButton)) {
+            if (player.direction.x < player.speed) {
+              player.direction.x = 0;
+              player.direction.x += 1;
+            }
+          } else if (isInside(mousePos, spaceButton)) {
+            if (shotCooldown < 0) {
+              shot();
+              shotCooldown = 240;
+            }
+          }
+        },
+        false
+      );
 
-            }
-        } else if (isInside(mousePos,rightButton)) { 
-        	if(player.direction.x<player.speed){
-                player.direction.x=0;
-        	    player.direction.x+=1;
-            }
-        } else if (isInside(mousePos,spaceButton)) { 
-            if(shotCooldown<0){
-                shot();
-                shotCooldown=240;
-            }
-        }
-    }, false);
-
-    function getMousePos(canvas, event) {
+      function getMousePos(canvas, event) {
         var rect = canvas.getBoundingClientRect();
         return {
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
         };
-    }
-    function isInside(pos, rect){
-        return pos.x > rect.pos.x && pos.x < rect.pos.x+rect.size.x && pos.y < rect.pos.y+rect.size.y && pos.y > rect.pos.y
-    }
-
-</script> 
-
-</body>
+      }
+      function isInside(pos, rect) {
+        return (
+          pos.x > rect.pos.x &&
+          pos.x < rect.pos.x + rect.size.x &&
+          pos.y < rect.pos.y + rect.size.y &&
+          pos.y > rect.pos.y
+        );
+      }
+    </script>
+  </body>
 </html>
