@@ -61,7 +61,6 @@
       acl.addEventListener("reading", () => {
         player.direction = acl.x;
 				acl.x<0?player.direction=-1.5:player.direction=1.5;
-        document.getElementById("console").innerHTML = acl.x;
       });
 
       acl.start();
@@ -129,6 +128,7 @@
 
       function playerMove() {
         console.log(player.direction.x);
+        document.getElementById("console").innerHTML = acl.x;
         player.direction.x *= player.brake;
         player.direction.y *= player.brake;
 
