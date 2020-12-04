@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta name="viewport" content="width=800" />
+    <style>
+      * {
+        touch-action: manipulation;
+      }
+    </style>
+  </head>
   <body>
     <canvas
       id="myCanvas"
@@ -9,8 +17,34 @@
     >
       Your browser does not support the HTML canvas tag.
     </canvas>
+    <button onclick="requestOrientationPermission();">
+      Request orientation permission
+    </button>
+
     <!-- <h1 id="console">console</h1> -->
     <script>
+      function requestOrientationPermission() {
+        DeviceOrientationEvent.requestPermission()
+          .then((response) => {
+            if (response == "granted") {
+              window.addEventListener("deviceorientation", (e) => {
+                let acl = new Accelerometer({ frequency: 60 });
+
+                acl.addEventListener("reading", () => {
+                  if (acl.x < -2.5) player.direction.x = 2.5;
+                  else if (acl.x > 2.5) player.direction.x = -2.5;
+                  else player.direction.x = acl.x * -1;
+
+                  if (aclx.x > -0.5 && aclx.x < 0.5) player.direction.x = -0;
+                });
+
+                acl.start();
+              });
+            }
+          })
+          .catch(console.error);
+      }
+
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
       var gameOver = false;
@@ -55,24 +89,6 @@
       var obstacles = [];
       var bonuses = [];
       var points = 0;
-
-      let acl = new Accelerometer({ frequency: 60 });
-
-      acl.addEventListener("reading", () => {
-				if(acl.x < -2.5)
-					player.direction.x=2.5;
-				else if(acl.x > 2.5)
-					player.direction.x=-2.5;
-				else
-					player.direction.x=acl.x*-1;
-
-				if(aclx.x > -0.5 && aclx.x < 0.5)
-					player.direction.x=-0;
-				
-				
-      });
-
-      acl.start();
 
       var FPS = 240;
       window.onload = function () {
@@ -139,14 +155,11 @@
         //document.getElementById("console").innerHTML = player.direction.x;
         player.direction.x *= player.brake;
         player.direction.y *= player.brake;
-				
-				
+
         player.pos.x += player.direction.x;
         player.pos.y += player.direction.y;
-				if(player.pos.x<20)
-					player.pos.x=20;
-				if(player.pos.x>canvas.width-40)
-					player.pos.x=canvas.width-40;
+        if (player.pos.x < 20) player.pos.x = 20;
+        if (player.pos.x > canvas.width - 40) player.pos.x = canvas.width - 40;
 
         for (var i = 0; i < obstacles.length; i++) {
           if (obstacles[i].pos.y - player.pos.y == 20) {
@@ -319,9 +332,9 @@
           }
         } else if (event.keyCode === 32) {
           //if (shotCooldown < 0) {
-            shot();
-           // shotCooldown = 240;
-         // }
+          shot();
+          // shotCooldown = 240;
+          // }
         }
       });
 
@@ -395,8 +408,8 @@
             }
           } else if (isInside(mousePos, spaceButton)) {
             //if (shotCooldown < 0) {
-              shot();
-              //shotCooldown = 240;
+            shot();
+            //shotCooldown = 240;
             //}
           }
         },
