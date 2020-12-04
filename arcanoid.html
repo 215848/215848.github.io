@@ -31,11 +31,11 @@
                 let acl = new Accelerometer({ frequency: 60 });
 
                 acl.addEventListener("reading", () => {
-                  if (acl.x < -2.5) player.direction.x = 2.5;
-                  else if (acl.x > 2.5) player.direction.x = -2.5;
-                  else player.direction.x = acl.x * -1;
+                  if (acl.x < -2.5) player.direction = 2.5;
+                  else if (acl.x > 2.5) player.direction = -2.5;
+                  else player.direction = acl.x * -1;
 
-                  if (aclx.x > -0.5 && aclx.x < 0.5) player.direction.x = -0;
+                  if (aclx.x > -0.5 && aclx.x < 0.5) player.direction = -0;
                 });
 
                 acl.start();
@@ -48,7 +48,7 @@
       var ctx = canvas.getContext("2d");
       var gameOver = false;
       var player = {
-        pos: { x: 325, y: 550 },
+        pos: { x: 625, y: 550 },
         direction: 0,
         brake: 0.993,
         width: 150,
@@ -61,16 +61,26 @@
       };
       var blocks = [];
       generateBlocks()
+      function generateBlocks(){
+        for(var i = 2 ; i < 800 ; i+=50){
+            var block = {
+                pos: {x: i, y: 100},
+                width: 45,
+                height: 10
+            }
+            blocks.push(block);
+        }
+      }
       var FPS = 240;
 
       let acl = new Accelerometer({ frequency: 60 });
 
       acl.addEventListener("reading", () => {
-        if (acl.x < -2.5) player.direction.x = 2.5;
-        else if (acl.x > 2.5) player.direction.x = -2.5;
-        else player.direction.x = acl.x * -1;
+        if (acl.x < -2.5) player.direction = 2.5;
+        else if (acl.x > 2.5) player.direction = -2.5;
+        else player.direction = acl.x * -1;
 
-        if (aclx.x > -0.5 && aclx.x < 0.5) player.direction.x = -0;
+        if (aclx.x > -0.5 && aclx.x < 0.5) player.direction = -0;
       });
 
       acl.start();
@@ -103,18 +113,11 @@
 
         checkBallCollision();
       }
-      function generateBlocks(){
-        for(var i = 2 ; i < 800 ; i+=50){
-            var block = {
-                pos: {x: i, y: 100}
-            }
-            blocks.push(block);
-        }
-      }
+     
       function drawBlocks(){
         for(var block of blocks){
             ctx.fillStyle = "black";
-            ctx.fillRect(block.pos.x, block.pos.y, 45, 10);
+            ctx.fillRect(block.pos.x, block.pos.y, block.width, block.height);
         }
       }
       function checkBallCollision() {
@@ -125,6 +128,13 @@
         
         if (ball.pos.x < player.pos.x+player.width && ball.pos.x > player.pos.x &&
             ball.pos.y + ball.diameter > player.pos.y) ball.direction.y *= -1;
+        for (block of blocks){
+            if (ball.pos.x < block.pos.x+block.width && ball.pos.x > block.pos.x &&
+                ball.pos.y - ball.diameter < block.pos.y+block.height) {
+                    ball.direction.y *= -1;
+                    blocks.splice(blocks.indexOf(block),1);
+                }
+        }
       }
       function drawBall() {
         ctx.beginPath();
