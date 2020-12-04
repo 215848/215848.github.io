@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=800" />
+    <style>
+      * {
+        touch-action: manipulation;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas
+      id="myCanvas"
+      width="800"
+      height="600"
+      style="border: 1px solid #d3d3d3"
+    >
+      Your browser does not support the HTML canvas tag.
+    </canvas>
+    <button onclick="requestOrientationPermission();">
+      Request orientation permission
+    </button>
+
+    <!-- <h1 id="console">console</h1> -->
+    <script>
+      function requestOrientationPermission() {
+        DeviceOrientationEvent.requestPermission()
+          .then((response) => {
+            if (response == "granted") {
+              window.addEventListener("deviceorientation", (e) => {
+                let acl = new Accelerometer({ frequency: 60 });
+
+                acl.addEventListener("reading", () => {
+                  if (acl.x < -2.5) player.direction.x = 2.5;
+                  else if (acl.x > 2.5) player.direction.x = -2.5;
+                  else player.direction.x = acl.x * -1;
+
+                  if (aclx.x > -0.5 && aclx.x < 0.5) player.direction.x = -0;
+                });
+
+                acl.start();
+              });
+            }
+          })
+          .catch(console.error);
+      }
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      var gameOver = false;
+      var player = {
+        pos: { x: 325, y: 550 },
+        direction: 0,
+        brake: 0.993,
+        width: 150,
+        height: 25,
+      };
+      var ball = {
+        pos: { x: 325, y: 200 },
+        direction: { x: 1, y: -1 },
+        diameter: 10,
+      };
+      var FPS = 240;
+
+      let acl = new Accelerometer({ frequency: 60 });
+
+      acl.addEventListener("reading", () => {
+        if (acl.x < -2.5) player.direction.x = 2.5;
+        else if (acl.x > 2.5) player.direction.x = -2.5;
+        else player.direction.x = acl.x * -1;
+
+        if (aclx.x > -0.5 && aclx.x < 0.5) player.direction.x = -0;
+      });
+
+      acl.start();
+
+      window.onload = function () {
+        setInterval(function () {
+          if (!gameOver) {
+            playerMove();
+            moveBall();
+            refresh();
+          }
+        }, 1000 / FPS);
+      };
+      function moveBall() {
+        ball.pos.x += ball.direction.x;
+        ball.pos.y += ball.direction.y;
+
+        checkBallCollision();
+      }
+      function checkBallCollision() {
+        if (ball.pos.x < ball.diameter) ball.direction.x *= -1;
+        if (ball.pos.x > canvas.width - ball.diameter) ball.direction.x *= -1;
+        if (ball.pos.y < ball.diameter) ball.direction.y *= -1;
+        if (ball.pos.y > canvas.height - ball.diameter) gameOver = true;
+        
+        if (ball.pos.x < player.pos.x+player.width && ball.pos.x > player.pos.x &&
+            ball.pos.y + ball.diameter > player.pos.y) ball.direction.y *= -1;
+      }
+      function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ball.pos.x, ball.pos.y, ball.diameter, 0, 2 * Math.PI);
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+        ctx.stroke();
+      }
+      function playerMove() {
+        //document.getElementById("console").innerHTML = player.direction.x;
+        player.direction *= player.brake;
+
+        player.pos.x += player.direction;
+
+        if (player.pos.x < 0) player.pos.x = 0;
+        if (player.pos.x > canvas.width - player.width)
+          player.pos.x = canvas.width - player.width;
+      }
+      function refresh() {
+        ctx.fillStyle = "Grey";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawPlayer();
+        drawBall();
+        if (gameOver) {
+          ctx.font = "60px Arial";
+          ctx.fillStyle = "red";
+          ctx.fillText("Game  Over!", 220, 200);
+        }
+      }
+
+      function drawPlayer() {
+        ctx.fillStyle = "Blue";
+        ctx.fillRect(player.pos.x, player.pos.y, player.width, player.height);
+      }
+      document.addEventListener("keydown", (event) => {
+        if (event.keyCode === 37) {
+          player.direction = 0;
+          player.direction -= 1;
+        } else if (event.keyCode === 39) {
+          player.direction = 0;
+          player.direction += 1;
+        }
+      });
+    </script>
+  </body>
+</html>
