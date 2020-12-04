@@ -130,7 +130,7 @@
             ball.pos.y + ball.diameter > player.pos.y) ball.direction.y *= -1;
         for (block of blocks){
             if (ball.pos.x < block.pos.x+block.width && ball.pos.x > block.pos.x &&
-                (ball.pos.y - ball.diameter < block.pos.y+block.height ||  ball.pos.y + ball.diameter < block.pos.y)) {
+                (ball.pos.y - ball.diameter < block.pos.y+block.height ||  ball.pos.y + ball.diameter > block.pos.y)) {
                     ball.direction.y *= -1;
                     blocks.splice(blocks.indexOf(block),1);
                 }
