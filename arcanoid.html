@@ -59,6 +59,8 @@
         direction: { x: 1, y: -1 },
         diameter: 10,
       };
+      var blocks = [];
+      generateBlocks()
       var FPS = 240;
 
       let acl = new Accelerometer({ frequency: 60 });
@@ -82,11 +84,38 @@
           }
         }, 1000 / FPS);
       };
+      function refresh() {
+        ctx.fillStyle = "Grey";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawPlayer();
+        drawBall();
+        drawBlocks();
+        if (gameOver) {
+          ctx.font = "60px Arial";
+          ctx.fillStyle = "red";
+          ctx.fillText("Game  Over!", 220, 200);
+        }
+      }
+
       function moveBall() {
         ball.pos.x += ball.direction.x;
         ball.pos.y += ball.direction.y;
 
         checkBallCollision();
+      }
+      function generateBlocks(){
+        for(var i = 2 ; i < 800 ; i+=50){
+            var block = {
+                pos: {x: i, y: 100}
+            }
+            blocks.push(block);
+        }
+      }
+      function drawBlocks(){
+        for(var block of blocks){
+            ctx.fillStyle = "black";
+            ctx.fillRect(block.pos.x, block.pos.y, 45, 10);
+        }
       }
       function checkBallCollision() {
         if (ball.pos.x < ball.diameter) ball.direction.x *= -1;
@@ -105,7 +134,6 @@
         ctx.stroke();
       }
       function playerMove() {
-        //document.getElementById("console").innerHTML = player.direction.x;
         player.direction *= player.brake;
 
         player.pos.x += player.direction;
@@ -114,18 +142,7 @@
         if (player.pos.x > canvas.width - player.width)
           player.pos.x = canvas.width - player.width;
       }
-      function refresh() {
-        ctx.fillStyle = "Grey";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        drawPlayer();
-        drawBall();
-        if (gameOver) {
-          ctx.font = "60px Arial";
-          ctx.fillStyle = "red";
-          ctx.fillText("Game  Over!", 220, 200);
-        }
-      }
-
+    
       function drawPlayer() {
         ctx.fillStyle = "Blue";
         ctx.fillRect(player.pos.x, player.pos.y, player.width, player.height);
