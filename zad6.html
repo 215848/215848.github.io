@@ -74,6 +74,18 @@
         title: "Shot",
       };
 
+      let acl = new Accelerometer({ frequency: 60 });
+
+      acl.addEventListener("reading", () => {
+        if (acl.x < -2.5) player.direction.x = 2.5;
+        else if (acl.x > 2.5) player.direction.x = -2.5;
+        else player.direction.x = acl.x * -1;
+
+        if (aclx.x > -0.5 && aclx.x < 0.5) player.direction.x = -0;
+      });
+
+      acl.start();
+
       var Rects = [];
       var bullets = [];
       //var shotCooldown = -1;
