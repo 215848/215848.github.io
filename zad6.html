@@ -20,7 +20,6 @@
     <button onclick="permission();">Request orientation permission</button>
 
     <h1 id="console">console</h1>
-    <h1 id="console2">console</h1>
 
     <script>
       function permission() {
@@ -46,7 +45,7 @@
       }
 
       function handleOrientation(event) {
-        player.direction.x = event.gamma /7;
+        player.direction.x = event.gamma /9;
         document.getElementById("console").innerHTML = player.direction.x;
 
       }
