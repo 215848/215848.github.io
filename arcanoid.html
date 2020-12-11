@@ -44,7 +44,7 @@
       var blocks = [];
       generateBlocks();
       function generateBlocks() {
-        for (var i = 2; i < 800; i += 50) {
+        for (var i = 2; i < canvas.width; i += 50) {
           var block = {
             pos: { x: i, y: 100 },
             width: 45,
@@ -113,8 +113,8 @@
       }
 
       function moveBall() {
-        ball.pos.x += ball.direction.x;
-        ball.pos.y += ball.direction.y;
+        ball.pos.x += ball.direction.x * (canvas.width/800);
+        ball.pos.y += ball.direction.y * (cavas.height/600);
 
         checkBallCollision();
       }
