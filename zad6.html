@@ -109,7 +109,10 @@
       function handleOrientation(event) {
         player.direction.x = event.gamma /8;
         if(player.direction.x > player.speed){
-          player.direction.x=player.speed;
+          player.direction.x = player.speed;
+        }
+        if(player.direction.x < player.speed * -1){
+          player.direction.x = player.speed * -1;
         }
         document.getElementById("console").innerHTML = player.direction.x;
 
