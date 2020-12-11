@@ -22,6 +22,7 @@
     <h1 id="console">console</h1>
 
     <script>
+      permission();
       function permission() {
         console.log("test");
         if (
@@ -45,7 +46,10 @@
       }
 
       function handleOrientation(event) {
-        player.direction.x = event.gamma /9;
+        player.direction.x = event.gamma /8;
+        if(player.direction.x > player.speed){
+          player.direction.x=player.speed;
+        }
         document.getElementById("console").innerHTML = player.direction.x;
 
       }
