@@ -20,6 +20,8 @@
     <button onclick="permission();">Request orientation permission</button>
 
     <h1 id="console">console</h1>
+    <h1 id="console2">console</h1>
+
     <script>
       function permission() {
         console.log("test");
@@ -45,7 +47,10 @@
 
       function handleOrientation(event) {
         var x = event.beta;
+        var y = event.gamma;
         document.getElementById("console").innerHTML = x;
+        document.getElementById("console2").innerHTML = y;
+
       }
 
       var canvas = document.getElementById("myCanvas");
