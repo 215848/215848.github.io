@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=800, height=600"  />
+    <meta name="viewport" content="width=800"  />
     <style>
       * {
         touch-action: manipulation;
@@ -19,7 +19,7 @@
     </canvas>
     <button onclick="permission();">Request orientation permission</button>
 
-    <h1 id="console">console</h1>
+    <!-- <h1 id="console">console</h1> -->
 
     <script>
      
@@ -114,7 +114,6 @@
         if(player.direction.x < player.speed * -1){
           player.direction.x = player.speed * -1;
         }
-        document.getElementById("console").innerHTML = player.direction.x;
 
       }
       permission();

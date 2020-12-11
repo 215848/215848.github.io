@@ -17,33 +17,12 @@
     >
       Your browser does not support the HTML canvas tag.
     </canvas>
-    <button onclick="requestOrientationPermission();">
-      Request orientation permission
-    </button>
+    <button onclick="permission()">Request orientation permission</button>
 
     <!-- <h1 id="console">console</h1> -->
     <script>
-      function requestOrientationPermission() {
-        DeviceOrientationEvent.requestPermission()
-          .then((response) => {
-            if (response == "granted") {
-              window.addEventListener("deviceorientation", (e) => {
-                let acl = new Accelerometer({ frequency: 60 });
+     
 
-                acl.addEventListener("reading", () => {
-                  if (acl.x < -2.5) player.direction = 2.5;
-                  else if (acl.x > 2.5) player.direction = -2.5;
-                  else player.direction = acl.x * -1;
-
-                  if (aclx.x > -0.5 && aclx.x < 0.5) player.direction = -0;
-                });
-
-                acl.start();
-              });
-            }
-          })
-          .catch(console.error);
-      }
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
       var gameOver = false;
@@ -60,30 +39,53 @@
         diameter: 10,
       };
       var blocks = [];
-      generateBlocks()
-      function generateBlocks(){
-        for(var i = 2 ; i < 800 ; i+=50){
-            var block = {
-                pos: {x: i, y: 100},
-                width: 45,
-                height: 10
-            }
-            blocks.push(block);
+      generateBlocks();
+      function generateBlocks() {
+        for (var i = 2; i < 800; i += 50) {
+          var block = {
+            pos: { x: i, y: 100 },
+            width: 45,
+            height: 10,
+          };
+          blocks.push(block);
         }
       }
       var FPS = 240;
 
-      let acl = new Accelerometer({ frequency: 60 });
+      function permission() {
+        console.log("test");
+        if (
+          typeof DeviceMotionEvent !== "undefined" &&
+          typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+          DeviceMotionEvent.requestPermission()
+            .then((response) => {
+              if (response == "granted") {
+                window.addEventListener(
+                  "deviceorientation",
+                  handleOrientation,
+                  true
+                );
+              }
+            })
+            .catch(console.error);
+        } else {
+          window.addEventListener("deviceorientation", handleOrientation, true);
+        }
+      }
+      
 
-      acl.addEventListener("reading", () => {
-        if (acl.x < -2.5) player.direction = 2.5;
-        else if (acl.x > 2.5) player.direction = -2.5;
-        else player.direction = acl.x * -1;
+      function handleOrientation(event) {
+        player.direction = event.gamma /8;
+        if(player.direction > player.speed){
+          player.direction = player.speed;
+        }
+        if(player.direction < player.speed * -1){
+          player.direction = player.speed * -1;
+        }
 
-        if (aclx.x > -0.5 && aclx.x < 0.5) player.direction = -0;
-      });
-
-      acl.start();
+      }
+      permission();
 
       window.onload = function () {
         setInterval(function () {
@@ -113,11 +115,11 @@
 
         checkBallCollision();
       }
-     
-      function drawBlocks(){
-        for(var block of blocks){
-            ctx.fillStyle = "black";
-            ctx.fillRect(block.pos.x, block.pos.y, block.width, block.height);
+
+      function drawBlocks() {
+        for (var block of blocks) {
+          ctx.fillStyle = "black";
+          ctx.fillRect(block.pos.x, block.pos.y, block.width, block.height);
         }
       }
       function checkBallCollision() {
@@ -125,15 +127,25 @@
         if (ball.pos.x > canvas.width - ball.diameter) ball.direction.x *= -1;
         if (ball.pos.y < ball.diameter) ball.direction.y *= -1;
         if (ball.pos.y > canvas.height - ball.diameter) gameOver = true;
-        
-        if (ball.pos.x < player.pos.x+player.width && ball.pos.x > player.pos.x &&
-            ball.pos.y + ball.diameter > player.pos.y) ball.direction.y *= -1;
-        for (block of blocks){
-            if ((ball.pos.x < block.pos.x+block.width && ball.pos.x > block.pos.x) &&
-                (Math.abs((ball.pos.y - ball.diameter)-(block.pos.y+block.height)) <5 || Math.abs((ball.pos.y + ball.diameter)-block.pos.y)  < 5)) {
-                    ball.direction.y *= -1;
-                    blocks.splice(blocks.indexOf(block),1);
-                }
+
+        if (
+          ball.pos.x < player.pos.x + player.width &&
+          ball.pos.x > player.pos.x &&
+          ball.pos.y + ball.diameter > player.pos.y
+        )
+          ball.direction.y *= -1;
+        for (block of blocks) {
+          if (
+            ball.pos.x < block.pos.x + block.width &&
+            ball.pos.x > block.pos.x &&
+            (Math.abs(
+              ball.pos.y - ball.diameter - (block.pos.y + block.height)
+            ) < 5 ||
+              Math.abs(ball.pos.y + ball.diameter - block.pos.y) < 5)
+          ) {
+            ball.direction.y *= -1;
+            blocks.splice(blocks.indexOf(block), 1);
+          }
         }
       }
       function drawBall() {
@@ -152,7 +164,7 @@
         if (player.pos.x > canvas.width - player.width)
           player.pos.x = canvas.width - player.width;
       }
-    
+
       function drawPlayer() {
         ctx.fillStyle = "Blue";
         ctx.fillRect(player.pos.x, player.pos.y, player.width, player.height);
