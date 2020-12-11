@@ -46,10 +46,8 @@
       }
 
       function handleOrientation(event) {
-        player.direction.x = event.beta /10;
-
-        document.getElementById("console").innerHTML = x;
-        document.getElementById("console2").innerHTML = y;
+        player.direction.x = event.gamma /10;
+        document.getElementById("console").innerHTML = player.direction.x;
 
       }
 
