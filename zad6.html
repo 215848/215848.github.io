@@ -22,37 +22,7 @@
     <h1 id="console">console</h1>
 
     <script>
-      permission();
-      function permission() {
-        console.log("test");
-        if (
-          typeof DeviceMotionEvent !== "undefined" &&
-          typeof DeviceMotionEvent.requestPermission === "function"
-        ) {
-          DeviceMotionEvent.requestPermission()
-            .then((response) => {
-              if (response == "granted") {
-                window.addEventListener(
-                  "deviceorientation",
-                  handleOrientation,
-                  true
-                );
-              }
-            })
-            .catch(console.error);
-        } else {
-          window.addEventListener("deviceorientation", handleOrientation, true);
-        }
-      }
-
-      function handleOrientation(event) {
-        player.direction.x = event.gamma /8;
-        if(player.direction.x > player.speed){
-          player.direction.x=player.speed;
-        }
-        document.getElementById("console").innerHTML = player.direction.x;
-
-      }
+     
 
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
@@ -113,6 +83,38 @@
           }
         }, 1000 / FPS);
       };
+      function permission() {
+        console.log("test");
+        if (
+          typeof DeviceMotionEvent !== "undefined" &&
+          typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+          DeviceMotionEvent.requestPermission()
+            .then((response) => {
+              if (response == "granted") {
+                window.addEventListener(
+                  "deviceorientation",
+                  handleOrientation,
+                  true
+                );
+              }
+            })
+            .catch(console.error);
+        } else {
+          window.addEventListener("deviceorientation", handleOrientation, true);
+        }
+      }
+      
+
+      function handleOrientation(event) {
+        player.direction.x = event.gamma /8;
+        if(player.direction.x > player.speed){
+          player.direction.x=player.speed;
+        }
+        document.getElementById("console").innerHTML = player.direction.x;
+
+      }
+      permission();
       function drawButtons() {
         ctx.fillStyle = leftButton.color;
         ctx.fillRect(
