@@ -17,31 +17,36 @@
     >
       Your browser does not support the HTML canvas tag.
     </canvas>
-    <button onclick="permission();">
-      Request orientation permission
-    </button>
+    <button onclick="permission();">Request orientation permission</button>
 
     <h1 id="console">console</h1>
     <script>
-      function permission () {
-            if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
-                DeviceMotionEvent.requestPermission()
-                    .then( response => {
-                    if ( response == "granted" ) {
-                            window.addEventListener("deviceorientation", handleOrientation, true);
-                }
+      function permission() {
+        console.log("test");
+        if (
+          typeof DeviceMotionEvent !== "undefined" &&
+          typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+          DeviceMotionEvent.requestPermission()
+            .then((response) => {
+              if (response == "granted") {
+                window.addEventListener(
+                  "deviceorientation",
+                  handleOrientation,
+                  true
+                );
+              }
             })
-            .catch( console.error )
-            } else {
-                window.addEventListener("deviceorientation", handleOrientation, true);
-            }
+            .catch(console.error);
+        } else {
+          window.addEventListener("deviceorientation", handleOrientation, true);
         }
+      }
 
-
-        function handleOrientation(event) {
-          var x = event.beta;
-          var asd=getElementById("console").innerHTML= x;
-        }
+      function handleOrientation(event) {
+        var x = event.beta;
+        document.getElementById("console").innerHTML = x;
+      }
 
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
