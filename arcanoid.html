@@ -11,9 +11,9 @@
   <body>
     <canvas
       id="myCanvas"
-      width="800"
+      width="800" 
       height="600"
-      style="border: 1px solid #d3d3d3;width: 100vw; height: 100vh"
+      style="border: 1px solid #d3d3d3"
     >
       Your browser does not support the HTML canvas tag.
     </canvas>
@@ -25,6 +25,8 @@
 
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
       var gameOver = false;
       var player = {
         pos: { x: 625, y: 550 },
