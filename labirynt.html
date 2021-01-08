@@ -213,8 +213,13 @@
       }
 
       function handleOrientation(event) {
-        player.velX = event.gamma / 8;
-        player.velY = event.beta / 8;
+        if(getOrientation() === "Portrait"){
+          player.velX = event.gamma / 8;
+          player.velY = event.beta / 4;
+        } else {
+          player.velX = event.beta / 4;
+          player.velY = event.gamma / 8;
+        }
         if (player.velY > -player.speed) {
           player.velY--;
         }
@@ -228,7 +233,12 @@
           player.velX--;
         }
       }
-
+      function getOrientation() {
+        var orientation =
+          window.innerWidth > window.innerHeight ? "Landscape" : "Portrait";
+        return orientation;
+      }
+  
       window.onload = function () {
         setInterval(function () {
           if (!gameOver && gameStarted) {
