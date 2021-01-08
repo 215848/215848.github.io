@@ -235,17 +235,17 @@
           player.velY = (-1 * event.gamma) / 8;
         }
         if (player.velX > player.speed) {
-            player.velX = player.speed;
-          }
-          if (player.velX < player.speed) {
-            player.velX = player.speed;
-          }
-          if (player.velY < player.speed) {
-            player.velX = player.speed;
-          }
-          if (player.velY > -player.speed) {
-            player.velX = player.speed;
-          }
+          player.velX = player.speed;
+        }
+        if (player.velX < -1*player.speed) {
+          player.velX = -1*player.speed;
+        }
+        if (player.velY < player.speed) {
+          player.velY=player.speed;
+        }
+        if (player.velY > -1*player.speed) {
+          player.velY=-1*player.speed;
+        }
       }
       function getOrientation() {
         var orientation =
