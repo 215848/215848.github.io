@@ -64,11 +64,11 @@
       var gameOver = false;
       var gameStarted = false;
       var endpoint = {
-        x: (canvas.width * 9) / 10,
-        y: (canvas.height * 1) / 10,
+        x: (canvas.width * 9) /10,
+        y: (canvas.height * 1) /10,
       };
       var player = {
-        pos: { x: canvas.width / 10, y: (canvas.height * 9) / 10 },
+        pos: { x: (canvas.width * 1) /10 , y: (canvas.height * 9) /10 },
         friction: 0.98,
         velY: 0,
         velX: 0,
@@ -190,8 +190,8 @@
         });
       }
       var FPS = 240;
-      //initMaze1();
-      //initMaze2();
+      initMaze1();
+      initMaze2();
       function permission() {
         if (
           typeof DeviceMotionEvent !== "undefined" &&
@@ -254,9 +254,9 @@
       function refresh() {
         ctx.fillStyle = "Grey";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawEndPoint();
         drawPlayer();
         drawBlocks();
-        drawEndPoint();
         if (gameOver) {
           ctx.font = "60px Arial";
           ctx.fillStyle = "red";
@@ -266,27 +266,27 @@
       }
 
       function playerMove() {
-        // if (player.keys[38]) {
-        //   if (player.velY > -player.speed) {
-        //     player.velY--;
-        //   }
-        // }
+        if (player.keys[38]) {
+          if (player.velY > -player.speed) {
+            player.velY--;
+          }
+        }
 
-        // if (player.keys[40]) {
-        //   if (player.velY < player.speed) {
-        //     player.velY++;
-        //   }
-        // }
-        // if (player.keys[39]) {
-        //   if (player.velX < player.speed) {
-        //     player.velX++;
-        //   }
-        // }
-        // if (player.keys[37]) {
-        //   if (player.velX > -player.speed) {
-        //     player.velX--;
-        //   }
-        // }
+        if (player.keys[40]) {
+          if (player.velY < player.speed) {
+            player.velY++;
+          }
+        }
+        if (player.keys[39]) {
+          if (player.velX < player.speed) {
+            player.velX++;
+          }
+        }
+        if (player.keys[37]) {
+          if (player.velX > -player.speed) {
+            player.velX--;
+          }
+        }
 
         player.velY *= player.friction;
         player.pos.y += player.velY;
@@ -362,8 +362,8 @@
       function drawEndPoint() {
         ctx.beginPath();
         ctx.arc(
-          (canvas.width * 9) / 10,
-          (canvas.width * 1) / 10,
+          endpoint.x,
+          endpoint.y,
           20,
           0,
           2 * Math.PI
@@ -371,12 +371,14 @@
         ctx.fillStyle = "red";
         ctx.fill();
         ctx.stroke();
+
       }
       function drawBlocks() {
         for (block of maze.blocks) {
           ctx.fillStyle = "black";
           ctx.fillRect(block.x, block.y, block.width, block.height);
         }
+
       }
       document.body.addEventListener("keydown", function (e) {
         player.keys[e.keyCode] = true;
