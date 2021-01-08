@@ -230,22 +230,11 @@
         if (getOrientation() === "Portrait") {
           player.velX = event.gamma / 8;
           player.velY = event.beta / 2;
-          if (player.velY > -player.speed) {
-            player.velY--;
-          }
-          if (player.velY < player.speed) {
-            player.velY++;
-          }
-          if (player.velX < player.speed) {
-            player.velX++;
-          }
-          if (player.velX > -player.speed) {
-            player.velX--;
-          }
         } else {
           player.velX = event.beta / 2;
           player.velY = (-1 * event.gamma) / 8;
-          if (player.velX > -player.speed) {
+        }
+        if (player.velX > player.speed) {
             player.velX--;
           }
           if (player.velX < player.speed) {
@@ -257,7 +246,6 @@
           if (player.velY > -player.speed) {
             player.velY--;
           }
-        }
       }
       function getOrientation() {
         var orientation =
