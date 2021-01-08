@@ -85,6 +85,7 @@
       };
       var maze = Math.floor(Math.random() * 2) + 1 == 1 ? maze1 : maze2;
       function initMaze1() {
+        maze1.blocks = [];
         maze1.blocks.push({
           x: canvas.width / 5,
           width: canvas.width / 5,
@@ -119,7 +120,7 @@
           x: (canvas.width * 4) / 5,
           width: 1,
           y: 0,
-          height: (canvas.width * 1) / 5,
+          height: (canvas.height * 1) / 5,
         });
         maze1.blocks.push({
           x: (canvas.width * 4) / 5,
@@ -147,6 +148,7 @@
         });
       }
       function initMaze2() {
+        maze2.blocks = [];
         maze2.blocks.push({
           x: 0,
           width: (canvas.width * 3) / 5,
@@ -198,6 +200,8 @@
         canvas.height = window.innerHeight;
         initMaze1();
         initMaze2();
+        endpoint.x =(canvas.width * 9) /10
+        endpoint.y = (canvas.height * 1) /10
       };
       function permission() {
         if (
