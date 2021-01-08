@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=800" />
+    <style>
+      * {
+        touch-action: manipulation;
+      }
+
+      .block {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: none;
+        background-color: #4caf50;
+        padding: 14px 28px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 500%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .canvasStyle {
+        border: 0;
+        width: 800;
+        height: 600;
+      }
+
+      div {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <button id="startGameBtn" class="block" onclick="permission()">
+        Start Game
+      </button>
+    </div>
+    <canvas id="myCanvas" class="canvasStyle">
+      Your browser does not support the HTML canvas tag.
+    </canvas>
+
+    <!-- <h1 id="console">console</h1> -->
+    <script>
+      document.getElementById("myCanvas").hidden = true;
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      var gameOver = false;
+      var gameStarted = false;
+      var player = {
+        pos: { x: canvas.width - 175, y: canvas.height - 50 },
+        friction: 0.98,
+        velY: 0,
+        velX: 0,
+        speed: 2,
+        diameter: 10,
+        keys: []
+      };
+      var maze1 = {
+        blocks: []
+      }
+      function initMaze1(){
+          for(var i=0;i<2;i++){
+            var block = {x: canvas.width/2, width: 50, y: canvas.height/2, height: 1}
+            maze1.blocks.push(block);
+          }
+      }
+      var FPS = 240;
+      initMaze1();
+      function permission() {
+        // if (
+        //     typeof DeviceMotionEvent !== "undefined" &&
+        //     typeof DeviceMotionEvent.requestPermission === "function"
+        // ) {
+        //     DeviceMotionEvent.requestPermission()
+        //         .then((response) => {
+        //             if (response == "granted") {
+        //                 window.addEventListener(
+        //                     "deviceorientation",
+        //                     handleOrientation,
+        //                     true
+        //                 );
+        //             }
+        //         })
+        //         .catch(console.error);
+        // } else {
+        //     window.addEventListener("deviceorientation", handleOrientation, true);
+        // }
+        gameStarted = true;
+        document.getElementById("myCanvas").hidden = false;
+        document.getElementById("startGameBtn").remove();
+      }
+
+      // function handleOrientation(event) {
+      //     player.direction = event.gamma / 8;
+      //     if (player.direction > player.speed) {
+      //         player.direction = player.speed;
+      //     }
+      //     if (player.direction < player.speed * -1) {
+      //         player.direction = player.speed * -1;
+      //     }
+      // }
+
+      window.onload = function () {
+        setInterval(function () {
+          if (!gameOver && gameStarted) {
+            playerMove();
+            refresh();
+          }
+        }, 1000 / FPS);
+      };
+      function refresh() {
+        ctx.fillStyle = "Grey";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawPlayer();
+        drawBlocks();
+        if (gameOver) {
+          ctx.font = "60px Arial";
+          ctx.fillStyle = "red";
+          ctx.textAlign = "center";
+          ctx.fillText("Game  Over!", canvas.width / 2, canvas.height / 2);
+        }
+      }
+
+      function playerMove() {
+        if (player.keys[38]) {
+          if (player.velY > -player.speed) {
+            player.velY--;
+          }
+        }
+
+        if (player.keys[40]) {
+          if (player.velY < player.speed) {
+            player.velY++;
+          }
+        }
+        if (player.keys[39]) {
+          if (player.velX < player.speed) {
+            player.velX++;
+          }
+        }
+        if (player.keys[37]) {
+          if (player.velX > -player.speed) {
+            player.velX--;
+          }
+        }
+
+        player.velY *= player.friction;
+        player.pos.y += player.velY;
+        player.velX *= player.friction;
+        player.pos.x += player.velX;
+
+        handlePlayerCollision()
+      
+      }
+      function handlePlayerCollision(){
+        for(block of maze1.blocks){
+            if(block.x)
+        }
+        if (player.pos.x >= canvas.width) {
+          player.pos.x = canvas.width;
+        } else if (player.pos.x <= player.diameter) {
+          player.pos.x = player.diameter;
+        }
+
+        if (player.pos.y > canvas.height) {
+          player.pos.y = canvas.height;
+        } else if (player.pos.y <= player.diameter) {
+          player.pos.y = player.diameter;
+        }
+
+      }
+      function drawPlayer() {
+        ctx.beginPath();
+        ctx.arc(player.pos.x, player.pos.y, player.diameter, 0, 2 * Math.PI);
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+        ctx.stroke();
+      }
+      function drawBlocks() {
+          for(block of maze1.blocks){
+            ctx.fillStyle = "black";
+            ctx.fillRect(block.x, block.y, block.width, block.height);
+          }
+      }
+      document.body.addEventListener("keydown", function (e) {
+        player.keys[e.keyCode] = true;
+      });
+      document.body.addEventListener("keyup", function (e) {
+        player.keys[e.keyCode] = false;
+      });
+    </script>
+  </body>
+</html>
