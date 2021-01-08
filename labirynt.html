@@ -72,7 +72,7 @@
         friction: 0.98,
         velY: 0,
         velX: 0,
-        speed: 2,
+        speed: 10,
         diameter: 10,
         keys: [],
       };
@@ -235,16 +235,16 @@
           player.velY = (-1 * event.gamma) / 8;
         }
         if (player.velX > player.speed) {
-            player.velX--;
+            player.velX = player.speed;
           }
           if (player.velX < player.speed) {
-            player.velX++;
+            player.velX = player.speed;
           }
           if (player.velY < player.speed) {
-            player.velY++;
+            player.velX = player.speed;
           }
           if (player.velY > -player.speed) {
-            player.velY--;
+            player.velX = player.speed;
           }
       }
       function getOrientation() {
