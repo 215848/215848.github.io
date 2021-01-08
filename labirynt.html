@@ -60,6 +60,7 @@
       window.onresize = function () {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+
       };
       var gameOver = false;
       var gameStarted = false;
@@ -192,6 +193,12 @@
       var FPS = 240;
       initMaze1();
       initMaze2();
+      window.onresize = function () {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initMaze1();
+        initMaze2();
+      };
       function permission() {
         if (
           typeof DeviceMotionEvent !== "undefined" &&
@@ -219,10 +226,10 @@
       function handleOrientation(event) {
         if (getOrientation() === "Portrait") {
           player.velX = event.gamma / 8;
-          player.velY = event.beta / 4;
+          player.velY = event.beta / 2;
         } else {
-          player.velX = event.beta / 8;
-          player.velY = -1 *event.gamma / 4;
+          player.velX = event.beta / 2;
+          player.velY = -1 *event.gamma / 8;
         }
         if (player.velY > -player.speed) {
           player.velY--;
