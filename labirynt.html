@@ -57,6 +57,10 @@
       var ctx = canvas.getContext("2d");
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      window.onresize = function () {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
       var gameOver = false;
       var gameStarted = false;
       var endpoint = {
@@ -213,12 +217,12 @@
       }
 
       function handleOrientation(event) {
-        if(getOrientation() === "Portrait"){
+        if (getOrientation() === "Portrait") {
           player.velX = event.gamma / 8;
           player.velY = event.beta / 4;
         } else {
-          player.velX = event.beta / 4;
-          player.velY = event.gamma / 8;
+          player.velX = event.beta / 8;
+          player.velY = -1 *event.gamma / 4;
         }
         if (player.velY > -player.speed) {
           player.velY--;
@@ -238,7 +242,7 @@
           window.innerWidth > window.innerHeight ? "Landscape" : "Portrait";
         return orientation;
       }
-  
+
       window.onload = function () {
         setInterval(function () {
           if (!gameOver && gameStarted) {
