@@ -59,59 +59,175 @@
       canvas.height = window.innerHeight;
       var gameOver = false;
       var gameStarted = false;
+      var endpoint = {
+        x: (canvas.width * 9) / 10,
+        y: (canvas.height * 1) / 10,
+      };
       var player = {
-        pos: { x: canvas.width - 175, y: canvas.height - 50 },
+        pos: { x: canvas.width / 10, y: (canvas.height * 9) / 10 },
         friction: 0.98,
         velY: 0,
         velX: 0,
         speed: 2,
         diameter: 10,
-        keys: []
+        keys: [],
       };
       var maze1 = {
-        blocks: []
+        blocks: [],
+      };
+      var maze2 = {
+        blocks: [],
+      };
+      var maze = Math.floor(Math.random() * 2) + 1 == 1 ? maze1 : maze2;
+      function initMaze1() {
+        maze1.blocks.push({
+          x: canvas.width / 5,
+          width: canvas.width / 5,
+          y: (canvas.height * 4) / 5,
+          height: 1,
+        });
+        maze1.blocks.push({
+          x: 0,
+          width: (canvas.width * 2) / 5,
+          y: (canvas.height * 3) / 5,
+          height: 1,
+        });
+        maze1.blocks.push({
+          x: (canvas.width * 4) / 5,
+          width: (canvas.width * 1) / 5,
+          y: (canvas.height * 3) / 5,
+          height: 1,
+        });
+        maze1.blocks.push({
+          x: (canvas.width * 2) / 5,
+          width: (canvas.width * 3) / 5,
+          y: (canvas.height * 2) / 5,
+          height: 1,
+        });
+        maze1.blocks.push({
+          x: (canvas.width * 1) / 5,
+          width: (canvas.width * 3) / 5,
+          y: (canvas.height * 1) / 5,
+          height: 1,
+        });
+        maze1.blocks.push({
+          x: (canvas.width * 4) / 5,
+          width: 1,
+          y: 0,
+          height: (canvas.width * 1) / 5,
+        });
+        maze1.blocks.push({
+          x: (canvas.width * 4) / 5,
+          width: 1,
+          y: (canvas.height * 4) / 5,
+          height: canvas.height / 5,
+        });
+        maze1.blocks.push({
+          x: (canvas.width * 3) / 5,
+          width: 1,
+          y: (canvas.height * 3) / 5,
+          height: (canvas.height * 2) / 5,
+        });
+        maze1.blocks.push({
+          x: canvas.width / 5,
+          width: 1,
+          y: (canvas.height * 1) / 5,
+          height: canvas.height / 5,
+        });
+        maze1.blocks.push({
+          x: canvas.width / 5,
+          width: 1,
+          y: (canvas.height * 4) / 5,
+          height: canvas.height / 5,
+        });
       }
-      function initMaze1(){
-          for(var i=0;i<2;i++){
-            var block = {x: canvas.width/2, width: 50, y: canvas.height/2, height: 1}
-            maze1.blocks.push(block);
-          }
+      function initMaze2() {
+        maze2.blocks.push({
+          x: 0,
+          width: (canvas.width * 3) / 5,
+          y: (canvas.height * 1) / 5,
+          height: 1,
+        });
+        maze2.blocks.push({
+          x: (canvas.width * 1) / 5,
+          width: (canvas.width * 2) / 5,
+          y: (canvas.height * 2) / 5,
+          height: 1,
+        });
+        maze2.blocks.push({
+          x: (canvas.width * 4) / 5,
+          width: (canvas.width * 1) / 5,
+          y: (canvas.height * 4) / 5,
+          height: 1,
+        });
+        maze2.blocks.push({
+          x: (canvas.width * 1) / 5,
+          width: 1,
+          y: (canvas.height * 2) / 5,
+          height: (canvas.height * 3) / 5,
+        });
+        maze2.blocks.push({
+          x: (canvas.width * 2) / 5,
+          width: 1,
+          y: (canvas.height * 3) / 5,
+          height: (canvas.height * 2) / 5,
+        });
+        maze2.blocks.push({
+          x: (canvas.width * 3) / 5,
+          width: 1,
+          y: (canvas.height * 2) / 5,
+          height: (canvas.height * 2) / 5,
+        });
+        maze2.blocks.push({
+          x: (canvas.width * 4) / 5,
+          width: 1,
+          y: 0,
+          height: (canvas.height * 3) / 5,
+        });
       }
       var FPS = 240;
       initMaze1();
+      initMaze2();
       function permission() {
-        // if (
-        //     typeof DeviceMotionEvent !== "undefined" &&
-        //     typeof DeviceMotionEvent.requestPermission === "function"
-        // ) {
-        //     DeviceMotionEvent.requestPermission()
-        //         .then((response) => {
-        //             if (response == "granted") {
-        //                 window.addEventListener(
-        //                     "deviceorientation",
-        //                     handleOrientation,
-        //                     true
-        //                 );
-        //             }
-        //         })
-        //         .catch(console.error);
-        // } else {
-        //     window.addEventListener("deviceorientation", handleOrientation, true);
-        // }
+        if (
+          typeof DeviceMotionEvent !== "undefined" &&
+          typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+          DeviceMotionEvent.requestPermission()
+            .then((response) => {
+              if (response == "granted") {
+                window.addEventListener(
+                  "deviceorientation",
+                  handleOrientation,
+                  true
+                );
+              }
+            })
+            .catch(console.error);
+        } else {
+          window.addEventListener("deviceorientation", handleOrientation, true);
+        }
         gameStarted = true;
         document.getElementById("myCanvas").hidden = false;
         document.getElementById("startGameBtn").remove();
       }
 
-      // function handleOrientation(event) {
-      //     player.direction = event.gamma / 8;
-      //     if (player.direction > player.speed) {
-      //         player.direction = player.speed;
-      //     }
-      //     if (player.direction < player.speed * -1) {
-      //         player.direction = player.speed * -1;
-      //     }
-      // }
+      function handleOrientation(event) {
+        player.velX = event.gamma / 8;
+        player.velY = event.beta / 8;
+        if (player.velY > -player.speed) {
+          player.velY--;
+        }
+        if (player.velY < player.speed) {
+          player.velY++;
+        }
+        if (player.velX < player.speed) {
+          player.velX++;
+        }
+        if (player.velX > -player.speed) {
+          player.velX--;
+        }
+      }
 
       window.onload = function () {
         setInterval(function () {
@@ -126,61 +242,101 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         drawPlayer();
         drawBlocks();
+        drawEndPoint();
         if (gameOver) {
           ctx.font = "60px Arial";
           ctx.fillStyle = "red";
           ctx.textAlign = "center";
-          ctx.fillText("Game  Over!", canvas.width / 2, canvas.height / 2);
+          ctx.fillText("You Won!", canvas.width / 2, canvas.height / 2);
         }
       }
 
       function playerMove() {
-        if (player.keys[38]) {
-          if (player.velY > -player.speed) {
-            player.velY--;
-          }
-        }
+        // if (player.keys[38]) {
+        //   if (player.velY > -player.speed) {
+        //     player.velY--;
+        //   }
+        // }
 
-        if (player.keys[40]) {
-          if (player.velY < player.speed) {
-            player.velY++;
-          }
-        }
-        if (player.keys[39]) {
-          if (player.velX < player.speed) {
-            player.velX++;
-          }
-        }
-        if (player.keys[37]) {
-          if (player.velX > -player.speed) {
-            player.velX--;
-          }
-        }
+        // if (player.keys[40]) {
+        //   if (player.velY < player.speed) {
+        //     player.velY++;
+        //   }
+        // }
+        // if (player.keys[39]) {
+        //   if (player.velX < player.speed) {
+        //     player.velX++;
+        //   }
+        // }
+        // if (player.keys[37]) {
+        //   if (player.velX > -player.speed) {
+        //     player.velX--;
+        //   }
+        // }
 
         player.velY *= player.friction;
         player.pos.y += player.velY;
         player.velX *= player.friction;
         player.pos.x += player.velX;
-
-        handlePlayerCollision()
-      
+        handlePlayerCollision();
+        checkIfEnd();
       }
-      function handlePlayerCollision(){
-        for(block of maze1.blocks){
-            if(block.x)
+      function checkIfEnd() {
+        if (
+          player.pos.x < endpoint.x + 20 &&
+          player.pos.x > endpoint.x - 20 &&
+          player.pos.y < endpoint.y + 20 &&
+          player.pos.y > endpoint.y - 20
+        ) {
+          gameOver = true;
         }
-        if (player.pos.x >= canvas.width) {
-          player.pos.x = canvas.width;
+      }
+      function handlePlayerCollision() {
+        for (block of maze.blocks) {
+          if (
+            block.y < player.pos.y &&
+            block.y > player.pos.y - player.diameter &&
+            player.pos.x > block.x &&
+            player.pos.x < block.x + block.width
+          ) {
+            player.pos.y = block.y + player.diameter;
+          }
+          if (
+            block.y > player.pos.y &&
+            block.y < player.pos.y + player.diameter &&
+            player.pos.x > block.x &&
+            player.pos.x < block.x + block.width
+          ) {
+            player.pos.y = block.y - player.diameter;
+          }
+          if (
+            block.x > player.pos.x &&
+            block.x < player.pos.x + player.diameter &&
+            player.pos.y > block.y &&
+            player.pos.y < block.y + block.height
+          ) {
+            player.pos.x = block.x - player.diameter;
+          }
+          if (
+            block.x < player.pos.x &&
+            block.x > player.pos.x - player.diameter &&
+            player.pos.y > block.y &&
+            player.pos.y < block.y + block.height
+          ) {
+            player.pos.x = block.x + player.diameter;
+          }
+        }
+        if (player.pos.x + player.diameter >= canvas.width) {
+          player.pos.x = canvas.width - player.diameter;
         } else if (player.pos.x <= player.diameter) {
           player.pos.x = player.diameter;
         }
 
-        if (player.pos.y > canvas.height) {
-          player.pos.y = canvas.height;
+        if (player.pos.y + player.diameter > canvas.height) {
+          player.pos.y = canvas.height - player.diameter;
         } else if (player.pos.y <= player.diameter) {
           player.pos.y = player.diameter;
         }
-
       }
       function drawPlayer() {
         ctx.beginPath();
@@ -189,11 +345,24 @@
         ctx.fill();
         ctx.stroke();
       }
+      function drawEndPoint() {
+        ctx.beginPath();
+        ctx.arc(
+          (canvas.width * 9) / 10,
+          (canvas.width * 1) / 10,
+          20,
+          0,
+          2 * Math.PI
+        );
+        ctx.fillStyle = "red";
+        ctx.fill();
+        ctx.stroke();
+      }
       function drawBlocks() {
-          for(block of maze1.blocks){
-            ctx.fillStyle = "black";
-            ctx.fillRect(block.x, block.y, block.width, block.height);
-          }
+        for (block of maze.blocks) {
+          ctx.fillStyle = "black";
+          ctx.fillRect(block.x, block.y, block.width, block.height);
+        }
       }
       document.body.addEventListener("keydown", function (e) {
         player.keys[e.keyCode] = true;
