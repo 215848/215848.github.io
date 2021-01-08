@@ -60,16 +60,15 @@
       window.onresize = function () {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
       };
       var gameOver = false;
       var gameStarted = false;
       var endpoint = {
-        x: (canvas.width * 9) /10,
-        y: (canvas.height * 1) /10,
+        x: (canvas.width * 9) / 10,
+        y: (canvas.height * 1) / 10,
       };
       var player = {
-        pos: { x: (canvas.width * 1) /10 , y: (canvas.height * 9) /10 },
+        pos: { x: (canvas.width * 1) / 10, y: (canvas.height * 9) / 10 },
         friction: 0.98,
         velY: 0,
         velX: 0,
@@ -200,8 +199,8 @@
         canvas.height = window.innerHeight;
         initMaze1();
         initMaze2();
-        endpoint.x =(canvas.width * 9) /10
-        endpoint.y = (canvas.height * 1) /10
+        endpoint.x = (canvas.width * 9) / 10;
+        endpoint.y = (canvas.height * 1) / 10;
       };
       function permission() {
         if (
@@ -231,21 +230,33 @@
         if (getOrientation() === "Portrait") {
           player.velX = event.gamma / 8;
           player.velY = event.beta / 2;
+          if (player.velY > -player.speed) {
+            player.velY--;
+          }
+          if (player.velY < player.speed) {
+            player.velY++;
+          }
+          if (player.velX < player.speed) {
+            player.velX++;
+          }
+          if (player.velX > -player.speed) {
+            player.velX--;
+          }
         } else {
           player.velX = event.beta / 2;
-          player.velY = -1 *event.gamma / 8;
-        }
-        if (player.velY > -player.speed) {
-          player.velY--;
-        }
-        if (player.velY < player.speed) {
-          player.velY++;
-        }
-        if (player.velX < player.speed) {
-          player.velX++;
-        }
-        if (player.velX > -player.speed) {
-          player.velX--;
+          player.velY = (-1 * event.gamma) / 8;
+          if (player.velX > -player.speed) {
+            player.velX--;
+          }
+          if (player.velX < player.speed) {
+            player.velX++;
+          }
+          if (player.velY < player.speed) {
+            player.velY++;
+          }
+          if (player.velY > -player.speed) {
+            player.velY--;
+          }
         }
       }
       function getOrientation() {
@@ -372,24 +383,16 @@
       }
       function drawEndPoint() {
         ctx.beginPath();
-        ctx.arc(
-          endpoint.x,
-          endpoint.y,
-          20,
-          0,
-          2 * Math.PI
-        );
+        ctx.arc(endpoint.x, endpoint.y, 20, 0, 2 * Math.PI);
         ctx.fillStyle = "red";
         ctx.fill();
         ctx.stroke();
-
       }
       function drawBlocks() {
         for (block of maze.blocks) {
           ctx.fillStyle = "black";
           ctx.fillRect(block.x, block.y, block.width, block.height);
         }
-
       }
       document.body.addEventListener("keydown", function (e) {
         player.keys[e.keyCode] = true;
