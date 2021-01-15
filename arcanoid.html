@@ -115,7 +115,11 @@
         document.getElementById("myCanvas").hidden = false;
         document.getElementById("startGameBtn").remove();
       }
-
+      function getOrientation() {
+        var orientation =
+          window.innerWidth > window.innerHeight ? "Landscape" : "Portrait";
+        return orientation;
+      }
       function handleOrientation(event) {
         var e;
 
