@@ -55,7 +55,7 @@
       var gameOver = false;
       var gameStarted = false;
       var player = {
-        pos: { x: canvas.width - 175, y: canvas.height - 50 },
+        pos: { x: canvas.width - 175, y: canvas.height * 9/ 10 },
         direction: 0,
         brake: 0.99,
         speed: 2.5,
@@ -70,17 +70,17 @@
         pink: "pink",
       }
       var ball = {
-        pos: { x: 325, y: 200 },
+        pos: { x: canvas.width/2, y: canvas.height/5 },
         direction: { x: 1, y: -1 },
         diameter: 10,
       };
       var blocks = [];
       generateBlocks();
       function generateBlocks() {
-        for (var j = 1; j <= 2; j++) {
+        for (var j = 0; j < 2; j++) {
           for (var i = 2; i < canvas.width; i += 50) {
             var block = {
-              pos: { x: i, y: 50 * j },
+              pos: { x: i, y: canvas.height/10 + 45 *j },
               width: 45,
               height: 10,
               color: colors[Object.keys(colors)[Math.floor(Math.random() * 5)]]
@@ -123,6 +123,9 @@
       window.onresize = function () {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        generateBlocks();
+        ball.pos.x=canvas.width/2;
+        ball.pos.y= canvas.height/5;
       };
       function handleOrientation(event) {
         var e;
