@@ -78,7 +78,7 @@
       generateBlocks();
       function generateBlocks() {
         for (var j = 1; j <= 2; j++) {
-          for (var i = 2; i < canvas.width-20000; i += 50) {
+          for (var i = 2; i < canvas.width; i += 50) {
             var block = {
               pos: { x: i, y: 50 * j },
               width: 45,
@@ -117,15 +117,15 @@
       }
 
       function handleOrientation(event) {
-        var event;
+        var e;
 
         if (getOrientation() === "Portrait") {
-          event = event.gamma;
+          e = event.gamma;
         }else{
-          event = event.beta;
+          e = event.beta;
         }
 
-        player.direction = event / 8;
+        player.direction = e / 8;
         if (player.direction > player.speed) {
           player.direction = player.speed;
         }
