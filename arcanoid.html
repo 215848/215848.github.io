@@ -120,6 +120,10 @@
           window.innerWidth > window.innerHeight ? "Landscape" : "Portrait";
         return orientation;
       }
+      window.onresize = function () {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
       function handleOrientation(event) {
         var e;
 
