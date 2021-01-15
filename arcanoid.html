@@ -70,13 +70,14 @@
         pink: "pink",
       }
       var ball = {
-        pos: { x: canvas.width/2, y: canvas.height/5 },
+        pos: { x: canvas.width/2, y: canvas.height/10 + 90 },
         direction: { x: 1, y: -1 },
         diameter: 10,
       };
       var blocks = [];
       generateBlocks();
       function generateBlocks() {
+        blocks=[]
         for (var j = 0; j < 2; j++) {
           for (var i = 2; i < canvas.width; i += 50) {
             var block = {
@@ -126,6 +127,8 @@
         generateBlocks();
         ball.pos.x=canvas.width/2;
         ball.pos.y= canvas.height/5;
+        player.pos.x = canvas.width - 175;
+        player.pos.y = canvas.height * 9/ 10;
       };
       function handleOrientation(event) {
         var e;
